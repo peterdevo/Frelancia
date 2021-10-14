@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Persistence;
+using Server.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,26 +22,18 @@ namespace Server
 {
   public class Startup
   {
-    public Startup(IConfiguration configuration)
+    private readonly IConfiguration _config;
+    public Startup(IConfiguration config)
     {
-      Configuration = configuration;
-    }
+      _config = config;
 
-    public IConfiguration Configuration { get; }
+    }
 
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-
-      services.AddMediatR(typeof(List.Handler).Assembly);
-      services.AddAutoMapper(typeof(MappingProfile).Assembly);
       services.AddControllers();
-      services.AddSwaggerGen(c =>
-      {
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "Server", Version = "v1" });
-      });
-      services.AddDbContext<DataContext>(opt => opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
-      
+      services.AddApplicationServices(_config);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
