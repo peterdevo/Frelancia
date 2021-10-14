@@ -13,17 +13,29 @@ namespace Persistence
 
       if (context.JobProfiles.Any()) return;
 
+      var Niche = new List<Niche>{
+        new Niche{Id=1,Title="Frontend"},
+        new Niche{Id=2,Title="Backend"},
+        new Niche{Id=3,Title="Fullstack"},
+        
+      };
+
+      await context.AddRangeAsync(Niche);
+
+
       var JobProfiles = new List<JobProfile>
             {
                new JobProfile{
-                 Niche="Frontend",
                  Description="test1",
-                 CreateAt=DateTime.Now
+                 NicheId=Niche[0].Id,
+                 CreateAt=DateTime.Now,
+                 Photos="photo1"
                },
                new JobProfile{
-                 Niche="BackEnd",
+                 NicheId=Niche[1].Id,
                  Description="test2",
-                 CreateAt=DateTime.Now
+                 CreateAt=DateTime.Now,
+                 Photos="photo2"
                }
             };
       await context.AddRangeAsync(JobProfiles);

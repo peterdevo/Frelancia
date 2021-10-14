@@ -24,7 +24,7 @@ namespace Application
 
       public async Task<List<JobProfile>> Handle(Query request, CancellationToken cancellationToken)
       {
-        return await _context.JobProfiles.Include(p=>p.JobLinks).ToListAsync();
+        return await _context.JobProfiles.Include(p=>p.Niche).ToListAsync();
       }
     }
 
