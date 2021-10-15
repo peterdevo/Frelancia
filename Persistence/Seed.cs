@@ -29,7 +29,8 @@ namespace Persistence
                  Description="test1",
                  NicheId=Niche[0].Id,
                  CreateAt=DateTime.Now,
-                 Photos="photo1"
+                 Photos="photo1",
+                 
                },
                new JobProfile{
                  NicheId=Niche[1].Id,
@@ -54,6 +55,13 @@ namespace Persistence
             };
 
       await context.AddRangeAsync(links);
+
+
+      var jobs=new List<Job>{
+        new Job {JobProfileId=JobProfiles[0].Id,Title="Looking for frontend",Introduction="Hello this is my first job"},
+      };
+
+      await context.AddRangeAsync(jobs);
 
       await context.SaveChangesAsync();
     }

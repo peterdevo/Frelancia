@@ -13,11 +13,16 @@ namespace Persistence
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-     modelBuilder.Entity<JobProfile>()
-        .HasOne(p => p.Niche)
-        .WithMany(b => b.JobProfiles)
-        .HasForeignKey(p => p.NicheId);
+      modelBuilder.Entity<JobProfile>()
+         .HasOne(p => p.Niche)
+         .WithMany(b => b.JobProfiles)
+         .HasForeignKey(p => p.NicheId);
 
+
+      modelBuilder.Entity<JobProfile>()
+       .HasOne(j => j.Job)
+       .WithOne(jp => jp.JobProfile)
+       .HasForeignKey<Job>(jp => jp.JobProfileId);
     }
 
     public DbSet<JobProfile> JobProfiles { get; set; }
@@ -25,5 +30,7 @@ namespace Persistence
     public DbSet<JobLink> JobLinks { get; set; }
 
     public DbSet<Niche> Niches { get; set; }
+
+    public DbSet<Job> Jobs { get; set; }
   }
 }

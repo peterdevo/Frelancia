@@ -6,14 +6,14 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
-namespace Application
+namespace Application.JobPublishing
 {
   public class List
   {
+    public class Query : IRequest<List<Job>> { }
 
-    public class Query : IRequest<List<JobProfile>> { }
 
-    public class Handler : IRequestHandler<Query, List<JobProfile>>
+    public class Handler : IRequestHandler<Query, List<Job>>
     {
       private readonly DataContext _context;
       public Handler(DataContext context)
@@ -22,10 +22,9 @@ namespace Application
 
       }
 
-      public async Task<List<JobProfile>> Handle(Query request, CancellationToken cancellationToken)
+      public async Task<List<Job>> Handle(Query request, CancellationToken cancellationToken)
       {
-        
-        return await _context.JobProfiles.Include(p=>p.JobLinks).ToListAsync();
+        return await _context.Jobs.Include(j=>j.JobProfile).Include(j=>j.JobProfile.JobLinks).ToListAsync();
       }
     }
 
