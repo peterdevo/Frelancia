@@ -17,6 +17,15 @@ namespace Server.Extensions
 
       services.AddMediatR(typeof(List.Handler).Assembly);
       services.AddAutoMapper(typeof(MappingProfile).Assembly);
+
+      services.AddCors(options =>
+         {
+           options.AddPolicy("PolicyCors",
+                              builder =>
+                              {
+                                builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+                              });
+         });
       services.AddSwaggerGen(c =>
      {
        c.SwaggerDoc("v1", new OpenApiInfo { Title = "Server", Version = "v1" });
