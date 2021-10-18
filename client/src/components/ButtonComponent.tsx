@@ -1,17 +1,25 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 import classes from "./ButtonComponent.module.css";
 
-interface IProp {
-  text: string,
-  btnColor:string,
-  height?:string
+interface IProps {
+  text: string;
+  btnColor: string;
+  height?: string;
+  path: string;
 }
-const ButtonComponent = ({ text,btnColor,height }: IProp) => {
+const ButtonComponent = ({ path, text, btnColor, height }: IProps) => {
   return (
-    <div style={{ backgroundColor: btnColor,height }} className={classes.button}>
+    <NavLink
+      className={classes.button}
+      exact
+      to={path}
+      activeStyle={{borderBottom:"1px solid red"}}
+      style={{ backgroundColor: btnColor, height: height,textDecoration:"None" }}
+    >
       {text}
-    </div>
+    </NavLink>
   );
 };
 
-export default ButtonComponent
+export default ButtonComponent;

@@ -4,7 +4,8 @@ interface IProps{
 children:any
 }
 const Layout = ({children}:IProps) => {
-  return <div className={classes.layout}>{children}</div>;
+  return <div className={classes.layout}>
+    {children}</div>;
 };
 
 export default Layout;
