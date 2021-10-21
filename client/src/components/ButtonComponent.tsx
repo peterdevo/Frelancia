@@ -14,8 +14,13 @@ const ButtonComponent = ({ path, text, btnColor, height }: IProps) => {
       className={classes.button}
       exact
       to={path}
-      activeStyle={{borderBottom:"1px solid red"}}
-      style={{ backgroundColor: btnColor, height: height,textDecoration:"None" }}
+      activeStyle={{ backgroundColor: "rgb(235, 151, 126)" }}
+      style={{
+        borderTop: `1.2px solid ${btnColor}`,
+        borderBottom: `1.2px solid ${btnColor}`,
+        height: height,
+        textDecoration: "None",
+      }}
     >
       {text}
     </NavLink>

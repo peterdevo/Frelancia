@@ -1,4 +1,4 @@
 export interface JobLink {
-  id: number;
+  id?: number;
   url: string;
 }

@@ -1,5 +1,3 @@
-import { Grid } from "@mui/material";
-import React from "react";
 import AccountImg from "../../../components/AccountImg";
 import ButtonComponent from "../../../components/ButtonComponent";
 import CardComponent from "../../../components/CardComponent";

@@ -6,7 +6,7 @@ import { Route, Switch, useRouteMatch } from "react-router-dom";
 import JobProfileCreator from "./jobprofile/JobProfileCreator";
 import JobCreator from "./job/JobCreator";
 import ProfileManager from "./profile/ProfileManager";
-import InterestMangager from "./interest/InterestManager";
+import CardComponent from "../../components/CardComponent";
 
 const DashBoard = () => {
   let { path } = useRouteMatch();
@@ -14,19 +14,23 @@ const DashBoard = () => {
     <>
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={2}>
-          <Grid item xs={4} sx={{ border: "1px solid red" }}>
+          <Grid item xs={4}>
             <Nav />
           </Grid>
-          <Grid item xs={7} sx={{ border: "1px solid red" }}>
-            <Switch>
-              <Route exact path={`${path}/`}>
+          <Grid item xs={7}>
+            <CardComponent>
+              <Switch>
+                <Route exact path={`${path}/`}>
                   <h1>Welcome to Dashboard</h1>
-              </Route>
-              <Route path={`${path}/createprofile`}component={JobProfileCreator}/>
-              <Route path={`${path}/createjob`} component={JobCreator} />
-              <Route path={`${path}/profile`} component={ProfileManager} />
-              <Route path={`${path}/interest`} component={InterestMangager} />
-            </Switch>
+                </Route>
+                <Route
+                  path={`${path}/createprofile`}
+                  component={JobProfileCreator}
+                />
+                <Route path={`${path}/createjob`} component={JobCreator} />
+                <Route path={`${path}/profile`} component={ProfileManager} />
+              </Switch>
+            </CardComponent>
           </Grid>
         </Grid>
       </Box>

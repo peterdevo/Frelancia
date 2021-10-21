@@ -3,10 +3,12 @@
   height: 50px;
   padding: 5px;
   margin-bottom: 20px;
-  border-radius: 5px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: whitesmoke;
+  color: rgb(22, 21, 21);
+  
 }
+
+

@@ -29,6 +29,7 @@ const request = {
 
 const profileJobs = {
   list: () => request.get<JobProfile[]>("/profile"),
+  create:(jobProfile:JobProfile)=>request.post("/profile",jobProfile)
 };
 
 const agent = {
