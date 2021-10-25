@@ -8,7 +8,7 @@ interface IProps {
 const TopTab = ({ subPath,label }: IProps) => {
   let { path } = useRouteMatch();
   return (
-    <NavLink to={`${path}/${subPath}`} style={{ textDecoration: "none",color:"#FFFFFF" }}>
+    <NavLink exact to={`${path}/${subPath}`} style={{ textDecoration: "none",color:"#FFFFFF" }}>
       <Tab label={label} />
     </NavLink>
   );

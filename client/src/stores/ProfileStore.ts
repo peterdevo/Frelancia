@@ -1,10 +1,18 @@
 import { makeAutoObservable } from "mobx";
 import agent from "../API/agent";
 import { JobProfile } from "../models/JobProfile";
-const { v4: uuid} = require('uuid');
+const { v4: uuid } = require("uuid");
 
 export default class ProfileStore {
   jobProfiles: JobProfile[] = [];
+  selectedProfile: JobProfile = {
+    id: "",
+    nicheId: 1,
+    jobLinks: [],
+    photos: "",
+    description: "",
+    createAt: new Date(Date.now()),
+  };
   isLoading = false;
   constructor() {
     makeAutoObservable(this);
@@ -13,7 +21,7 @@ export default class ProfileStore {
   loadProfiles = async () => {
     this.setLoading(true);
     try {
-      const profiles = await agent.profileJobs.list();
+      const profiles = await agent.profileMangements.list();
       profiles.forEach((p) => {
         this.jobProfiles.push(p);
       });
@@ -30,11 +38,22 @@ export default class ProfileStore {
   createJobProfile = async (jobProfile: JobProfile) => {
     this.setLoading(true);
     try {
-      jobProfile.id=uuid;
-      agent.profileJobs.create(jobProfile);
+      jobProfile.id = uuid;
+      agent.profileMangements.create(jobProfile);
       this.setLoading(false);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
+  };
+
+  setSelectProfile = (e: any) => {
+    console.log(e);
+    const result = this.jobProfiles.find((jp) => jp.id === e);
+
+    if (result !== undefined) {
+      this.selectedProfile = result;
+    }
+
+   
   };
 }

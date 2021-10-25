@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios";
+import { Job } from "../models/Job";
 import { JobProfile } from "../models/JobProfile";
 
 const sleep = (delay: number) => {
@@ -27,13 +28,19 @@ const request = {
   delete: (url: string) => axios.delete(url).then(responseBody),
 };
 
-const profileJobs = {
+const profileMangements = {
   list: () => request.get<JobProfile[]>("/profile"),
   create:(jobProfile:JobProfile)=>request.post("/profile",jobProfile)
 };
 
+
+const JobMangements={
+  list:()=>request.get<Job[]>("/job"),
+  create:(job:Job)=>request.post("/job",job)
+}
 const agent = {
-  profileJobs,
+  profileMangements,
+  JobMangements
 };
 
 export default agent;

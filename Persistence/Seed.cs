@@ -17,7 +17,7 @@ namespace Persistence
         new Niche{Id=1,Title="Frontend"},
         new Niche{Id=2,Title="Backend"},
         new Niche{Id=3,Title="Fullstack"},
-        
+
       };
 
       await context.AddRangeAsync(Niche);
@@ -27,14 +27,14 @@ namespace Persistence
             {
                new JobProfile{
                  Description="test1",
-                 NicheId=Niche[0].Id,
+                 Niche=Niche[0],
                  CreateAt=DateTime.Now,
                  Photos="photo1",
-                 
+
                },
                new JobProfile{
-                 NicheId=Niche[1].Id,
                  Description="test2",
+                 Niche=Niche[0],
                  CreateAt=DateTime.Now,
                  Photos="photo2"
                }
@@ -57,7 +57,7 @@ namespace Persistence
       await context.AddRangeAsync(links);
 
 
-      var jobs=new List<Job>{
+      var jobs = new List<Job>{
         new Job {JobProfileId=JobProfiles[0].Id,Title="Looking for frontend",Introduction="Hello this is my first job"},
       };
 

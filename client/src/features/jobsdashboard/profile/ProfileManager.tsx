@@ -1,7 +1,7 @@
 import { Box } from "@mui/system";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 import EditAccountSetting from "./editaccountsetting/EditAccountSetting";
-import EditJob from "./editjob/EditJob";
+import ViewJob from "./viewjob/ViewActiveJob";
 import EditJobProfile from "./editjobprofile/EditJobProfile";
 import TopTab from "./toptabs/TopTab";
 
@@ -26,7 +26,7 @@ const ProfileManager = () => {
       >
         <TopTab subPath="editaccountsetting" label="Account setting" />
         <TopTab subPath="editjobprofile" label="Job profile" />
-        <TopTab subPath="editjob" label="Job" />
+        <TopTab subPath="viewjob" label="Job" />
       </Box>
 
       <Box>
@@ -41,7 +41,7 @@ const ProfileManager = () => {
             path={`${path}/editjobprofile`}
             component={EditJobProfile}
           />
-          <Route exact path={`${path}/editjob`} component={EditJob} />
+          <Route exact path={`${path}/viewjob`} component={ViewJob} />
         </Switch>
       </Box>
     </Box>
