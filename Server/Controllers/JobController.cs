@@ -26,7 +26,14 @@ namespace Server.Controllers
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteJob(Guid id)
     {
-        return Ok( await Mediator.Send(new Delete.Command {Id=id}));
+      return Ok(await Mediator.Send(new Delete.Command { Id = id }));
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> EditJob(Guid id, Job job)
+    {
+      job.Id=id;
+      return Ok(await Mediator.Send(new Edit.Command { Job = job }));
     }
   }
 }

@@ -5,40 +5,110 @@ import {
   CardContent,
   Typography,
 } from "@mui/material";
+import { useFormik } from "formik";
+import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { useStore } from "../../../../stores/store";
+import { toJS } from "mobx";
 
 const ViewActiveJob = () => {
-  const { JobStore } = useStore();
+  const { jobStore } = useStore();
+
   useEffect(() => {
-    if (JobStore.jobs.length <= 0) {
-      JobStore.loadJobs();
+    if (jobStore.jobs.length <= 0) {
+      jobStore.loadJobs();
     }
-  }, [JobStore]);
+  }, [jobStore]);
+
+  const formik = useFormik({
+    initialValues: jobStore.selectedJob,
+    onSubmit(values) {
+      // console.log(toJS(values));
+    },
+  });
   return (
     <>
-      {JobStore.jobs.map((job) => (
-        <Card key={job.id} sx={{ maxWidth: "100%" }}>
-          <CardActionArea>
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                {job.title}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {job.introduction}
-              </Typography>
-
-              <Typography variant="body2" color="text.secondary">
-                Active
-              </Typography>
-            </CardContent>
-            <Button style={{marginRight:"5px",backgroundColor:"green"}} variant="contained" size="medium" type="submit">Activate</Button>
-            <Button style={{backgroundColor:"red"}} variant="contained" size="medium" type="submit">Deactivate</Button>
-          </CardActionArea>
-        </Card>
-      ))}
+      <form onSubmit={formik.handleSubmit}>
+        {jobStore.jobs.map((job) => (
+          <Card
+            key={job.id}
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              padding: "5px",
+              position: "relative",
+            }}
+          >
+            <CardActionArea>
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="div">
+                  {job.title}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {job.introduction}
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+            {job.isActive ? (
+              <div
+                style={{
+                  position: "absolute",
+                  width: "10px",
+                  height: "10px",
+                  borderRadius: "50%",
+                  backgroundColor: "#4E9F3D",
+                  top: 5,
+                  right: 10,
+                }}
+              ></div>
+            ) : (
+              <div
+                style={{
+                  position: "absolute",
+                  width: "10px",
+                  height: "10px",
+                  borderRadius: "50%",
+                  backgroundColor: "red",
+                  top: 5,
+                  right: 10,
+                }}
+              ></div>
+            )}
+            <div>
+              <Button
+                style={{ marginRight: "5px", backgroundColor: "red" }}
+                variant="contained"
+                size="small"
+                type="submit"
+                onClick={() => jobStore.setActivate(job)}
+              >
+                Activate
+              </Button>
+              <Button
+                style={{ marginRight: "5px", backgroundColor: "#E26A2C" }}
+                variant="contained"
+                size="small"
+                type="submit"
+                onClick={() => {
+                  jobStore.setDeActivate(job);
+                }}
+              >
+                Deactivate
+              </Button>
+              <Button
+                style={{ backgroundColor: "#8E0505" }}
+                variant="contained"
+                size="small"
+                type="submit"
+              >
+                Delete job
+              </Button>
+            </div>
+          </Card>
+        ))}
+      </form>
     </>
   );
 };
 
-export default ViewActiveJob;
+export default observer(ViewActiveJob);

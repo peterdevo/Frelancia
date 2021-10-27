@@ -6,5 +6,5 @@ export interface JobProfile{
   jobLinks: JobLink[];
   photos: string;
   description: string;
-  createAt: Date;
+  createAt?: Date;
 }

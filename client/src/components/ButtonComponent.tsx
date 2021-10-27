@@ -14,12 +14,14 @@ const ButtonComponent = ({ path, text, btnColor, height }: IProps) => {
       className={classes.button}
       exact
       to={path}
-      activeStyle={{ backgroundColor: "rgb(235, 151, 126)" }}
+      activeStyle={{backgroundImage: `linear-gradient(to right, #FF7777,${btnColor})` }}
       style={{
-        borderTop: `1.2px solid ${btnColor}`,
-        borderBottom: `1.2px solid ${btnColor}`,
+        backgroundColor:`${btnColor}`,
         height: height,
         textDecoration: "None",
+        color:"white",
+        borderRadius:"10px"
+
       }}
     >
       {text}

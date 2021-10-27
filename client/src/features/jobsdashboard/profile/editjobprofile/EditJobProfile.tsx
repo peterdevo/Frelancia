@@ -4,7 +4,7 @@ import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import Loading from "../../../../components/Loading";
 import { useStore } from "../../../../stores/store";
-// import { toJS } from "mobx";
+import { toJS } from "mobx";
 import ListLinks from "../../jobprofile/listoflinks/ListLinks";
 import classes from "./EditJobProfile.module.css";
 
@@ -21,6 +21,8 @@ const EditJobProfile = () => {
     initialValues: profileStore.selectedProfile,
     enableReinitialize: true,
     onSubmit: (values) => {
+      profileStore.editJobProfile(values);
+
       // console.log(toJS(values));
     },
   });
@@ -45,7 +47,7 @@ const EditJobProfile = () => {
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value=""
+              value={profileStore.selectedProfile.id}
               label="Profile"
               onChange={handleOnchange}
               fullWidth
@@ -81,13 +83,26 @@ const EditJobProfile = () => {
                 name="photos"
                 value={formik.values.photos}
                 onChange={formik.handleChange}
+                
                 fullWidth
               />
             </div>
 
             <div>
               {formik.values.jobLinks.map((l, index) => {
-                return <ListLinks key={index} text={l.url} />;
+                return (
+                  <ListLinks
+                    key={index}
+                    text={l.url}
+                    handleDelete={() =>
+                      profileStore.setUpdatedLinks(
+                        profileStore.selectedProfile.jobLinks.filter(
+                          (link) => link.id !== l.id
+                        )
+                      )
+                    }
+                  />
+                );
               })}
             </div>
 

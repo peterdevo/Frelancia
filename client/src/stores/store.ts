@@ -4,12 +4,12 @@ import ProfileStore from "./ProfileStore";
 
 interface Store {
   profileStore: ProfileStore;
-  JobStore:JobStore
+  jobStore:JobStore
 }
 
 export const store: Store = {
   profileStore: new ProfileStore(),
-  JobStore:new JobStore()
+  jobStore:new JobStore()
 };
 
 export const StoreContext=createContext(store);

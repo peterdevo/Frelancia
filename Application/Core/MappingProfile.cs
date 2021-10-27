@@ -8,6 +8,7 @@ namespace Application.Core
         public MappingProfile()
         {
             CreateMap<JobProfile,JobProfile>();
+            CreateMap<Job,Job>();
         }
     }
 }

@@ -30,17 +30,19 @@ const request = {
 
 const profileMangements = {
   list: () => request.get<JobProfile[]>("/profile"),
-  create:(jobProfile:JobProfile)=>request.post("/profile",jobProfile)
+  create:(jobProfile:JobProfile)=>request.post("/profile",jobProfile),
+  edit:(jobProfile:JobProfile)=>request.put(`profile/${jobProfile.id}`,jobProfile)
 };
 
 
-const JobMangements={
+const jobMangements={
   list:()=>request.get<Job[]>("/job"),
-  create:(job:Job)=>request.post("/job",job)
+  create:(job:Job)=>request.post("/job",job),
+  edit:(job:Job)=>request.put(`/job/${job.id}`,job)
 }
 const agent = {
   profileMangements,
-  JobMangements
+  jobMangements
 };
 
 export default agent;

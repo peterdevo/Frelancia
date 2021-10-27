@@ -14,7 +14,7 @@ import { useStore } from "../../../stores/store";
 import classes from "./JobCreator.module.css";
 
 const JobCreator = () => {
-  const { JobStore, profileStore } = useStore();
+  const { jobStore, profileStore } = useStore();
   const initalValue: Job = {
     id: "",
     title: "",
@@ -22,6 +22,7 @@ const JobCreator = () => {
     jobProfileId: "",
     introduction: "",
     isShared: false,
+    isActive:true
   };
 
   useEffect(() => {
@@ -33,7 +34,7 @@ const JobCreator = () => {
   const formik = useFormik({
     initialValues: initalValue,
     onSubmit: (value) => {
-      JobStore.createJob(value);
+      jobStore.createJob(value);
     },
   });
 

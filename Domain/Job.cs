@@ -10,6 +10,9 @@ namespace Domain
         public Guid JobProfileId { get; set; }
         public string Introduction { get; set; }
         public bool IsShared { get; set; }=false;
+        public bool IsActive { get; set; }=true;
+
+        
         
     }
 }

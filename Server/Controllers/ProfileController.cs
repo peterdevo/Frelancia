@@ -28,7 +28,7 @@ namespace Server.Controllers
     [HttpPut("{id}")]
 
     public async Task<IActionResult> EditJobProfile(Guid id,JobProfile jobProfile){
-
+      
       jobProfile.Id=id;
       return Ok(await Mediator.Send(new Edit.Command{JobProfile=jobProfile}));
     }

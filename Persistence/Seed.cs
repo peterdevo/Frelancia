@@ -34,7 +34,7 @@ namespace Persistence
                },
                new JobProfile{
                  Description="test2",
-                 Niche=Niche[0],
+                 Niche=Niche[1],
                  CreateAt=DateTime.Now,
                  Photos="photo2"
                }
@@ -49,7 +49,7 @@ namespace Persistence
               },
               new JobLink {
                 Id=2,
-                URL="link1",
+                URL="link2",
                 JobProfile=JobProfiles[1]
               }
             };

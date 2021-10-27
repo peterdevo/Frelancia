@@ -7,4 +7,5 @@ export interface Job{
   jobProfileId: string;
   introduction: string;
   isShared: boolean;
+  isActive: boolean;
 }

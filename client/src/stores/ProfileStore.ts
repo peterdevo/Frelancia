@@ -1,9 +1,11 @@
 import { makeAutoObservable } from "mobx";
 import agent from "../API/agent";
+import { JobLink } from "../models/JobLink";
 import { JobProfile } from "../models/JobProfile";
 const { v4: uuid } = require("uuid");
 
 export default class ProfileStore {
+
   jobProfiles: JobProfile[] = [];
   selectedProfile: JobProfile = {
     id: "",
@@ -39,21 +41,29 @@ export default class ProfileStore {
     this.setLoading(true);
     try {
       jobProfile.id = uuid;
-      agent.profileMangements.create(jobProfile);
+      await agent.profileMangements.create(jobProfile);
       this.setLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
 
-  setSelectProfile = (e: any) => {
-    console.log(e);
-    const result = this.jobProfiles.find((jp) => jp.id === e);
+  editJobProfile = async (jobProfile: JobProfile) => {
+    try {
+      agent.profileMangements.edit(jobProfile);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
+  setUpdatedLinks(jobLinks:JobLink[]){
+    this.selectedProfile.jobLinks=jobLinks;
+  }
+
+  setSelectProfile = (e: any) => {
+    const result = this.jobProfiles.find((jp) => jp.id === e);
     if (result !== undefined) {
       this.selectedProfile = result;
     }
-
-   
   };
 }
