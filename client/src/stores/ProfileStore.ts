@@ -1,11 +1,10 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import agent from "../API/agent";
 import { JobLink } from "../models/JobLink";
 import { JobProfile } from "../models/JobProfile";
 const { v4: uuid } = require("uuid");
 
 export default class ProfileStore {
-
   jobProfiles: JobProfile[] = [];
   selectedProfile: JobProfile = {
     id: "",
@@ -21,20 +20,17 @@ export default class ProfileStore {
   }
 
   loadProfiles = async () => {
-    this.setLoading(true);
     try {
       const profiles = await agent.profileMangements.list();
-      profiles.forEach((p) => {
-        this.jobProfiles.push(p);
+      runInAction(() => {
+        this.jobProfiles = [];
+        profiles.forEach((p) => {
+          this.jobProfiles.push(p);
+        });
       });
-      this.setLoading(false);
     } catch (error) {
       console.log(error);
     }
-  };
-
-  setLoading = (state: boolean) => {
-    this.isLoading = state;
   };
 
   createJobProfile = async (jobProfile: JobProfile) => {
@@ -50,14 +46,24 @@ export default class ProfileStore {
 
   editJobProfile = async (jobProfile: JobProfile) => {
     try {
-      agent.profileMangements.edit(jobProfile);
+      this.setLoading(true);
+      await agent.profileMangements.edit(jobProfile);
+      
+      runInAction(() => {
+        let index = this.jobProfiles.findIndex((jp) => jp.id === jobProfile.id);
+        this.jobProfiles[index] = jobProfile;
+        this.setLoading(false);
+        
+      });
+      
+      
     } catch (error) {
       console.log(error);
     }
   };
 
-  setUpdatedLinks(jobLinks:JobLink[]){
-    this.selectedProfile.jobLinks=jobLinks;
+  setUpdatedLinks(jobLinks: JobLink[]) {
+    this.selectedProfile.jobLinks = jobLinks;
   }
 
   setSelectProfile = (e: any) => {
@@ -65,5 +71,9 @@ export default class ProfileStore {
     if (result !== undefined) {
       this.selectedProfile = result;
     }
+  };
+
+  setLoading = (state: boolean) => {
+    this.isLoading = state;
   };
 }

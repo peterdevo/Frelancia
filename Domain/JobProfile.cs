@@ -16,7 +16,7 @@ namespace Domain
       public ICollection<JobLink> JobLinks { get; set; }
 
       [JsonIgnore]
-      public Job Job { get; set; }
+      public ICollection<Job>  Job { get; set; }
       public string Photos { get; set; }
       public string Description { get; set; }
       public DateTime CreateAt { get; set; }

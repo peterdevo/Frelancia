@@ -8,6 +8,7 @@ import { JobProfile } from "../../../models/JobProfile";
 import { useStore } from "../../../stores/store";
 import ListLinks from "./listoflinks/ListLinks";
 import { observer } from "mobx-react-lite";
+import Loading from "../../../components/Loading";
 
 const JobProfileCreator = () => {
   const [addedLinks, setAddedLinks] = useState("");
@@ -28,10 +29,11 @@ const JobProfileCreator = () => {
     onSubmit: (values) => {
       values.jobLinks = links;
       profileStore.createJobProfile(values);
-      console.log(values)
+      console.log(values);
     },
   });
 
+  if (profileStore.isLoading) return <Loading />;
   return (
     <>
       <form
@@ -68,7 +70,10 @@ const JobProfileCreator = () => {
             onChange={(e) => setAddedLinks(e.target.value)}
           />
 
-          <AddIcon style={{cursor:"pointer"}} onClick={() => setLinks([...links, { url: addedLinks }])} />
+          <AddIcon
+            style={{ cursor: "pointer" }}
+            onClick={() => setLinks([...links, { url: addedLinks }])}
+          />
         </div>
         <div>
           {links.length > 0 && (
@@ -107,13 +112,14 @@ const JobProfileCreator = () => {
             fullWidth
             multiline
             rows={4}
-           
           />
         </div>
-        <Button variant="contained" size="medium" type="submit">Create</Button>
+        <Button variant="contained" size="medium" type="submit">
+          Create
+        </Button>
       </form>
     </>
   );
 };
 
-export default observer(JobProfileCreator) ;
+export default observer(JobProfileCreator);

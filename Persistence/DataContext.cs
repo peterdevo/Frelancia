@@ -19,10 +19,10 @@ namespace Persistence
          .HasForeignKey(p => p.NicheId);
 
 
-      modelBuilder.Entity<JobProfile>()
-       .HasOne(j => j.Job)
-       .WithOne(jp => jp.JobProfile)
-       .HasForeignKey<Job>(jp => jp.JobProfileId);
+      modelBuilder.Entity<Job>()
+       .HasOne(j => j.JobProfile)
+       .WithMany(jp => jp.Job)
+       .HasForeignKey(jp => jp.JobProfileId);
     }
 
     public DbSet<JobProfile> JobProfiles { get; set; }

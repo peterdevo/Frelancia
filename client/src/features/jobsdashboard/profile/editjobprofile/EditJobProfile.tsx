@@ -4,7 +4,6 @@ import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import Loading from "../../../../components/Loading";
 import { useStore } from "../../../../stores/store";
-import { toJS } from "mobx";
 import ListLinks from "../../jobprofile/listoflinks/ListLinks";
 import classes from "./EditJobProfile.module.css";
 
@@ -12,9 +11,7 @@ const EditJobProfile = () => {
   const { profileStore } = useStore();
 
   useEffect(() => {
-    if (profileStore.jobProfiles.length <= 0) {
-      profileStore.loadProfiles();
-    }
+    profileStore.loadProfiles();
   }, [profileStore]);
 
   const formik = useFormik({
@@ -31,7 +28,8 @@ const EditJobProfile = () => {
     profileStore.setSelectProfile(e.target.value);
   };
 
-  if (profileStore.isLoading) return <Loading />;
+  if(profileStore.isLoading)return <Loading/>
+
   return (
     <>
       {profileStore.jobProfiles.length > 0 && (
@@ -83,7 +81,6 @@ const EditJobProfile = () => {
                 name="photos"
                 value={formik.values.photos}
                 onChange={formik.handleChange}
-                
                 fullWidth
               />
             </div>

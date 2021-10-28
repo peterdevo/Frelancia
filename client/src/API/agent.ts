@@ -38,7 +38,8 @@ const profileMangements = {
 const jobMangements={
   list:()=>request.get<Job[]>("/job"),
   create:(job:Job)=>request.post("/job",job),
-  edit:(job:Job)=>request.put(`/job/${job.id}`,job)
+  edit:(job:Job)=>request.put(`/job/${job.id}`,job),
+  delete:(id:string)=>request.delete(`/job/${id}`)
 }
 const agent = {
   profileMangements,

@@ -9,6 +9,7 @@ import {
 import { useFormik } from "formik";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
+import Loading from "../../../components/Loading";
 import { Job } from "../../../models/Job";
 import { useStore } from "../../../stores/store";
 import classes from "./JobCreator.module.css";
@@ -22,13 +23,11 @@ const JobCreator = () => {
     jobProfileId: "",
     introduction: "",
     isShared: false,
-    isActive:true
+    isActive: true,
   };
 
   useEffect(() => {
-    if (profileStore.jobProfiles.length <= 0) {
-      profileStore.loadProfiles();
-    }
+    profileStore.loadProfiles();
   }, [profileStore]);
 
   const formik = useFormik({
@@ -38,6 +37,8 @@ const JobCreator = () => {
     },
   });
 
+  
+if(jobStore.isLoading) return <Loading/>
   return (
     <form
       onSubmit={formik.handleSubmit}
@@ -93,7 +94,12 @@ const JobCreator = () => {
       </div>
 
       <FormControlLabel
-        sx={{ display:"flex",alignItems:"center",justifyContent:"center",marginBottom:"20px"}}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: "20px",
+        }}
         control={
           <Checkbox
             value={formik.values.isShared}
@@ -105,7 +111,9 @@ const JobCreator = () => {
         }
         label=" Your proffesional profile and contacts are allowed to share."
       />
-      <Button variant="contained" type="submit">Create</Button>
+      <Button variant="contained" type="submit">
+        Create
+      </Button>
     </form>
   );
 };

@@ -1,7 +1,6 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import agent from "../API/agent";
 import { Job } from "../models/Job";
-import { toJS } from "mobx";
 const { v4: uuid } = require("uuid");
 
 export default class JobStore {
@@ -33,19 +32,8 @@ export default class JobStore {
     try {
       job.id = uuid;
       await agent.jobMangements.create(job);
-
-      this.setLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  loadJobs = async () => {
-    this.setLoading(true);
-    try {
-      const jobsResponse = await agent.jobMangements.list();
-      jobsResponse.forEach((p) => {
-        this.jobs.push(p);
+      runInAction(() => {
+        this.jobs.push(job);
       });
       this.setLoading(false);
     } catch (error) {
@@ -53,7 +41,19 @@ export default class JobStore {
     }
   };
 
-  setActivation = async () => {};
+  loadJobs = async () => {
+    try {
+      const jobsResponse = await agent.jobMangements.list();
+      runInAction(() => {
+        this.jobs = [];
+        jobsResponse.forEach((p) => {
+          this.jobs.push(p);
+        });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   setLoading = (state: boolean) => {
     return (this.isLoading = state);
@@ -74,6 +74,15 @@ export default class JobStore {
     this.selectedJob.isActive = true;
     try {
       await agent.jobMangements.edit(this.selectedJob);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  setDeleteJob = async (id: string) => {
+    agent.jobMangements.delete(id);
+    try {
+      this.jobs = [...this.jobs.filter((j) => j.id !== id)];
     } catch (error) {
       console.log(error);
     }

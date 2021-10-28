@@ -9,15 +9,12 @@ import { useFormik } from "formik";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { useStore } from "../../../../stores/store";
-import { toJS } from "mobx";
 
 const ViewActiveJob = () => {
   const { jobStore } = useStore();
 
   useEffect(() => {
-    if (jobStore.jobs.length <= 0) {
-      jobStore.loadJobs();
-    }
+    jobStore.loadJobs();
   }, [jobStore]);
 
   const formik = useFormik({
@@ -35,8 +32,9 @@ const ViewActiveJob = () => {
             sx={{
               display: "flex",
               justifyContent: "space-between",
-              padding: "5px",
+              padding: "7px",
               position: "relative",
+              margin:"20px"
             }}
           >
             <CardActionArea>
@@ -100,6 +98,7 @@ const ViewActiveJob = () => {
                 variant="contained"
                 size="small"
                 type="submit"
+                onClick={() => jobStore.setDeleteJob(job.id)}
               >
                 Delete job
               </Button>
