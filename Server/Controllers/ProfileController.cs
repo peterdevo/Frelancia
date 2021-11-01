@@ -12,31 +12,40 @@ namespace Server.Controllers
   {
 
     [HttpGet]
-    public async Task<ActionResult<List<JobProfile>>> GetJobProfile()
+    public async Task<IActionResult> GetJobProfiles()
     {
-      return await Mediator.Send(new List.Query());
+      return HandleResult(await Mediator.Send(new List.Query()));
+    }
+
+    [HttpGet("{id}")]
+
+    public async Task<IActionResult> GetJobProfile(Guid id)
+    {
+     return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
     }
 
     [HttpPost]
 
     public async Task<IActionResult> AddJobProfile(JobProfile jobProfile)
     {
-      
-      return Ok(await Mediator.Send(new Create.Command { JobProfile = jobProfile }));
+
+      return HandleResult(await Mediator.Send(new Create.Command { JobProfile = jobProfile }));
     }
 
     [HttpPut("{id}")]
 
-    public async Task<IActionResult> EditJobProfile(Guid id,JobProfile jobProfile){
-      
-      jobProfile.Id=id;
-      return Ok(await Mediator.Send(new Edit.Command{JobProfile=jobProfile}));
+    public async Task<IActionResult> EditJobProfile(Guid id, JobProfile jobProfile)
+    {
+
+      jobProfile.Id = id;
+      return HandleResult(await Mediator.Send(new Edit.Command { JobProfile = jobProfile }));
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteJobProfile(Guid id){
+    public async Task<IActionResult> DeleteJobProfile(Guid id)
+    {
 
-        return Ok(await Mediator.Send(new Delete.Command{Id=id}));
+      return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
     }
   }
 }

@@ -7,6 +7,7 @@ import JobProfileCreator from "./jobprofile/JobProfileCreator";
 import JobCreator from "./job/JobCreator";
 import ProfileManager from "./profile/ProfileManager";
 import CardComponent from "../../components/CardComponent";
+import TestErrors from "../../errors/TestErrors";
 
 const DashBoard = () => {
   let { path } = useRouteMatch();
@@ -21,7 +22,7 @@ const DashBoard = () => {
             <CardComponent>
               <Switch>
                 <Route exact path={`${path}/`}>
-                  <h1>Welcome to Dashboard</h1>
+                  <TestErrors/>
                 </Route>
                 <Route
                   path={`${path}/createprofile`}

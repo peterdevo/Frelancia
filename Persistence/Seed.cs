@@ -36,7 +36,7 @@ namespace Persistence
                  Description="test2",
                  Niche=Niche[1],
                  CreateAt=DateTime.Now,
-                 Photos="photo2"
+                 Photos="photo2",              
                }
             };
       await context.AddRangeAsync(JobProfiles);

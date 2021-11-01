@@ -1,6 +1,9 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Core;
+using Application.JobProfiles;
 using Domain;
+using FluentValidation;
 using MediatR;
 using Persistence;
 
@@ -8,11 +11,22 @@ namespace Application
 {
   public class Create
   {
-    public class Command : IRequest {
+    public class Command : IRequest<Result<Unit>>
+    {
       public JobProfile JobProfile { get; set; }
-     }
+    }
 
-    public class Handler : IRequestHandler<Command>
+    public class CommandValidator : AbstractValidator<Command>
+    {
+      public CommandValidator()
+      {
+        RuleFor(x=>x.JobProfile).SetValidator(new JobProfileValidator());
+        
+      }
+    }
+
+
+    public class Handler : IRequestHandler<Command,Result<Unit>>
     {
       private readonly DataContext _context;
       public Handler(DataContext context)
@@ -21,12 +35,15 @@ namespace Application
 
       }
 
-      public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+      public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
       {
         _context.JobProfiles.Add(request.JobProfile);
-        await _context.SaveChangesAsync();
+        var result=await _context.SaveChangesAsync()>0;
 
-        return Unit.Value;
+        if(!result)return Result<Unit>.Failure("Fail to create job profile");
+
+        return Result<Unit>.Success(Unit.Value);
+
       }
     }
   }

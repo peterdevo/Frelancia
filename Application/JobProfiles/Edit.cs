@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Core;
 using AutoMapper;
 using Domain;
 using MediatR;
@@ -9,12 +10,12 @@ namespace Application
 {
   public class Edit
   {
-    public class Command : IRequest
+    public class Command : IRequest<Result<Unit>>
     {
       public JobProfile JobProfile { get; set; }
     }
 
-    public class Handler : IRequestHandler<Command>
+    public class Handler : IRequestHandler<Command, Result<Unit>>
     {
       private readonly DataContext _context;
       private readonly IMapper _mapper;
@@ -24,14 +25,17 @@ namespace Application
         _context = context;
       }
 
-      public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+      public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
       {
         var jobProfile = await _context.JobProfiles.FindAsync(request.JobProfile.Id);
+        if (jobProfile == null) return null;
         _mapper.Map(request.JobProfile, jobProfile);
 
-        await _context.SaveChangesAsync();
+        var result = await _context.SaveChangesAsync() > 0;
+        if (!result) return Result<Unit>.Failure("Failed to update");
 
-        return Unit.Value;
+        return Result<Unit>.Success(Unit.Value);
+
       }
     }
   }
