@@ -2,6 +2,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import agent from "../API/agent";
 import { JobLink } from "../models/JobLink";
 import { JobProfile } from "../models/JobProfile";
+import { toJS } from "mobx";
 const { v4: uuid } = require("uuid");
 
 export default class ProfileStore {
@@ -48,15 +49,12 @@ export default class ProfileStore {
     try {
       this.setLoading(true);
       await agent.profileMangements.edit(jobProfile);
-      
+
       runInAction(() => {
         let index = this.jobProfiles.findIndex((jp) => jp.id === jobProfile.id);
         this.jobProfiles[index] = jobProfile;
         this.setLoading(false);
-        
       });
-      
-      
     } catch (error) {
       console.log(error);
     }

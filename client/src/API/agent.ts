@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { Job } from "../models/Job";
 import { JobProfile } from "../models/JobProfile";
@@ -18,7 +18,7 @@ axios.interceptors.response.use(
     return response;
   },
   (error) => {
-    const { data, status, config } = error.response!;
+    const { data, status, config } = error.response;
 
     switch (status) {
       case 400:

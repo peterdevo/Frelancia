@@ -1,18 +1,13 @@
-import {
-  Button,
-  Checkbox,
-  FormControlLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
-import { useFormik } from "formik";
+import { Button, Checkbox, FormHelperText, Typography } from "@mui/material";
+import { Field, Formik, Form, ErrorMessage } from "formik";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
+import FormikField from "../../../components/customformik/FormikField";
+import FormikSelect from "../../../components/customformik/FormikSelect";
 import Loading from "../../../components/Loading";
 import { Job } from "../../../models/Job";
 import { useStore } from "../../../stores/store";
-import classes from "./JobCreator.module.css";
+import * as yup from "yup";
 
 const JobCreator = () => {
   const { jobStore, profileStore } = useStore();
@@ -20,101 +15,80 @@ const JobCreator = () => {
     id: "",
     title: "",
     jobProfile: null,
-    jobProfileId: "",
+    jobProfileId: profileStore.jobProfiles[0]?.id,
     introduction: "",
     isShared: false,
     isActive: true,
   };
 
+  const validationSchema = yup.object().shape({
+    title: yup.string().required(),
+    jobProfileId: yup.number().required(),
+    introduction: yup.string().required(),
+    isShared: yup.bool().oneOf([true]),
+  });
+
   useEffect(() => {
     profileStore.loadProfiles();
   }, [profileStore]);
 
-  const formik = useFormik({
-    initialValues: initalValue,
-    onSubmit: (value) => {
-      jobStore.createJob(value);
-    },
-  });
+  if (jobStore.isLoading) return <Loading />;
 
-  
-if(jobStore.isLoading) return <Loading/>
   return (
-    <form
-      onSubmit={formik.handleSubmit}
-      style={{
-        height: "100%",
-        padding: "20px",
-        display: "flex",
-        flexDirection: "column",
+    <Formik
+      validationSchema={validationSchema}
+      enableReinitialize
+      initialValues={initalValue}
+      onSubmit={(values) => {
+        jobStore.createJob(values);
       }}
     >
-      <div className={classes.inputStyle}>
-        <TextField
-          label="Title"
-          id="title"
-          name="title"
-          value={formik.values.title}
-          onChange={formik.handleChange}
-          fullWidth
-        />
-      </div>
-      <div className={classes.inputStyle}>
-        <Select
-          labelId="demo-simple-select-label"
-          name="jobProfileId"
-          id="jobProfileId"
-          value={formik.values.jobProfileId}
-          label="Niche"
-          fullWidth
-          onChange={formik.handleChange}
+      {({ handleSubmit, errors }) => (
+        <Form
+          onSubmit={handleSubmit}
+          style={{
+            height: "100%",
+            padding: "20px",
+            display: "flex",
+            flexDirection: "column",
+          }}
         >
-          {profileStore.jobProfiles.length > 0 &&
-            profileStore.jobProfiles.map((jp) => {
-              return (
-                <MenuItem key={jp.id} value={jp.id}>
-                  {jp.nicheId}
-                </MenuItem>
-              );
-            })}
-        </Select>
-      </div>
-
-      <div className={classes.inputStyle}>
-        <TextField
-          label="Introduction"
-          id="introduction"
-          name="introduction"
-          value={formik.values.introduction}
-          onChange={formik.handleChange}
-          fullWidth
-          multiline
-          rows={4}
-        />
-      </div>
-
-      <FormControlLabel
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          marginBottom: "20px",
-        }}
-        control={
-          <Checkbox
-            value={formik.values.isShared}
-            name="isShared"
-            id="isShared"
-            defaultChecked
-            onChange={formik.handleChange}
+          <FormikField placeholder="Photos" type="text" name="title" />
+          <FormikSelect name="jobProfileId">
+            {profileStore.jobProfiles.map((jp) => (
+              <option key={jp.id} value={jp.id}>
+                {jp.nicheId}
+              </option>
+            ))}
+          </FormikSelect>
+          <FormikField
+            placeholder="Introduction"
+            type="text"
+            name="introduction"
+            error={errors.introduction ? true : false}
+            helperText={errors.introduction}
           />
-        }
-        label=" Your proffesional profile and contacts are allowed to share."
-      />
-      <Button variant="contained" type="submit">
-        Create
-      </Button>
-    </form>
+          <div style={{display:"flex",alignItems:"center"}}>
+            <Field type="checkbox" name="isShared" component={Checkbox} />
+            <Typography>
+              Your proffesional profile and contacts are allowed to share.
+            </Typography>
+          </div>
+          <ErrorMessage
+            name="isShared"
+            render={() => (
+              <FormHelperText style={{ color: "red",margin:"10px 10px" }}>
+                must have your permission before publising job
+              </FormHelperText>
+            )}
+          />
+
+          <Button variant="contained" type="submit">
+            Create
+          </Button>
+        </Form>
+      )}
+    </Formik>
   );
 };
 
