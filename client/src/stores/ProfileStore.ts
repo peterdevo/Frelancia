@@ -23,6 +23,7 @@ export default class ProfileStore {
   loadProfiles = async () => {
     try {
       const profiles = await agent.profileMangements.list();
+      console.log(toJS(profiles))
       runInAction(() => {
         this.jobProfiles = [];
         profiles.forEach((p) => {

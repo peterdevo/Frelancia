@@ -22,7 +22,6 @@ namespace Application
         _context = context;
 
       }
-
       public async Task<Result<List<JobProfile>>> Handle(Query request, CancellationToken cancellationToken)
       {
         return Result<List<JobProfile>>.Success(await _context.JobProfiles.Include(p => p.JobLinks).ToListAsync());

@@ -1,36 +1,20 @@
 ﻿using Domain;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 
 namespace Persistence
 {
-  public class DataContext : DbContext
+  public class DataContext : IdentityDbContext<User>
   {
     public DataContext(DbContextOptions options) : base(options)
     {
     }
 
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-      modelBuilder.Entity<JobProfile>()
-         .HasOne(p => p.Niche)
-         .WithMany(b => b.JobProfiles)
-         .HasForeignKey(p => p.NicheId);
-
-
-      modelBuilder.Entity<Job>()
-       .HasOne(j => j.JobProfile)
-       .WithMany(jp => jp.Job)
-       .HasForeignKey(jp => jp.JobProfileId);
-    }
-
     public DbSet<JobProfile> JobProfiles { get; set; }
-
     public DbSet<JobLink> JobLinks { get; set; }
-
     public DbSet<Niche> Niches { get; set; }
-
     public DbSet<Job> Jobs { get; set; }
   }
 }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application;
 using Application.JobProfiles;
@@ -17,11 +16,13 @@ namespace Server.Controllers
       return HandleResult(await Mediator.Send(new List.Query()));
     }
 
+
+
     [HttpGet("{id}")]
 
     public async Task<IActionResult> GetJobProfile(Guid id)
     {
-     return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
+      return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
     }
 
     [HttpPost]
