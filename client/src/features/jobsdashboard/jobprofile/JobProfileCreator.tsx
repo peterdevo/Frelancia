@@ -1,7 +1,7 @@
 import { Button, TextField } from "@mui/material";
 import classes from "./JobProfileCreator.module.css";
 import AddIcon from "@mui/icons-material/Add";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form } from "formik";
 import { useState } from "react";
 import { JobLink } from "../../../models/JobLink";
 import { JobProfile } from "../../../models/JobProfile";

@@ -4,6 +4,7 @@ import { Job } from "../models/Job";
 import { JobProfile } from "../models/JobProfile";
 import { history } from "../index";
 import { store } from "../stores/store";
+import { User, UserFormValues } from "../models/User";
 
 const sleep = (delay: number) => {
   return new Promise((resolve) => {
@@ -11,6 +12,12 @@ const sleep = (delay: number) => {
   });
 };
 axios.defaults.baseURL = "http://localhost:5000";
+
+axios.interceptors.request.use((config) => {
+  const token = store.commonStore.token;
+  if (token) config.headers!.Authorization = `Bearer ${token}`;
+  return config;
+});
 
 axios.interceptors.response.use(
   async (response) => {
@@ -22,11 +29,8 @@ axios.interceptors.response.use(
 
     switch (status) {
       case 400:
-        if (typeof data === 'string') {
-          toast.error(data);
-        }
         if (config.method === "get" && data.errors.hasOwnProperty("id")) {
-          history.push("not-found");
+          history.push("/not-found");
         }
         if (data.errors) {
           const modalStateErrors = [];
@@ -36,8 +40,9 @@ axios.interceptors.response.use(
             }
           }
           throw modalStateErrors.flat();
+        } else {
+          toast.error(data);
         }
-       
         break;
       case 401:
         toast.error("Unauthorized");
@@ -58,8 +63,9 @@ const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
 const request = {
   get: <T>(url: string) => axios.get<T>(url).then(responseBody),
-  post: (url: string, body: {}) => axios.post(url, body).then(responseBody),
-  put: (url: string, body: {}) => axios.put(url, body).then(responseBody),
+  post: <T>(url: string, body: {}) =>
+    axios.post<T>(url, body).then(responseBody),
+  put: <T>(url: string, body: {}) => axios.put<T>(url, body).then(responseBody),
   delete: (url: string) => axios.delete(url).then(responseBody),
 };
 
@@ -76,9 +82,18 @@ const jobMangements = {
   edit: (job: Job) => request.put(`/job/${job.id}`, job),
   delete: (id: string) => request.delete(`/job/${id}`),
 };
+
+const account = {
+  login: (userValue: UserFormValues) =>
+    request.post<User>("/account/login", userValue),
+  register: (userValue: UserFormValues) =>
+    request.post<User>("/account/register", userValue),
+  getUser: () => request.get<User>("/account"),
+};
 const agent = {
   profileMangements,
   jobMangements,
+  account,
 };
 
 export default agent;

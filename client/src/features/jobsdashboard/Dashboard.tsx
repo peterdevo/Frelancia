@@ -1,4 +1,3 @@
-import React from "react";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Nav from "./navdashboard/Nav";
@@ -8,11 +7,13 @@ import JobCreator from "./job/JobCreator";
 import ProfileManager from "./profile/ProfileManager";
 import CardComponent from "../../components/CardComponent";
 import TestErrors from "../../errors/TestErrors";
+import Layout from "../../layout/Layout";
 
 const DashBoard = () => {
   let { path } = useRouteMatch();
   return (
-    <>
+    <Layout>
+
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={2}>
           <Grid item xs={4}>
@@ -35,7 +36,7 @@ const DashBoard = () => {
           </Grid>
         </Grid>
       </Box>
-    </>
+    </Layout>
   );
 };
 

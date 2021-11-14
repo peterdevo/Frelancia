@@ -48,12 +48,14 @@ namespace Server.Controllers
 
       if (await _userManager.Users.AnyAsync(user => user.Email == registerDto.Email))
       {
-        return BadRequest("email is taken");
+        ModelState.AddModelError("email","email is taken");
+        return ValidationProblem();
       }
 
       if (await _userManager.Users.AnyAsync(user => user.UserName == registerDto.Username))
       {
-        return BadRequest("username is taken");
+         ModelState.AddModelError("username","username is taken");
+        return ValidationProblem();
       }
 
 
