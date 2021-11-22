@@ -10,13 +10,6 @@ export default class JobStore {
   selectedJob: Job = {
     id: "",
     title: "",
-    jobProfile: {
-      id: "",
-      nicheId: 1,
-      jobLinks: [],
-      photos: "",
-      description: "",
-    },
     jobProfileId: "",
     introduction: "",
     isShared: true,

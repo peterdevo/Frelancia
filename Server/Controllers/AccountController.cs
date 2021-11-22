@@ -94,11 +94,11 @@ namespace Server.Controllers
     {
       return new UserDto
       {
+        Id=user.Id,
         DisplayName = user.DisplayName,
         Image = null,
         Token = _tokenService.CreateToken(user),
         UserName = user.UserName
-
       };
     }
   }

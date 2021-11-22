@@ -16,67 +16,72 @@ namespace Persistence
       {
         var users = new List<User>{
             new User{DisplayName="Bob",UserName="bob",Email="bob@hotmail.com"},
-            new User{DisplayName="Tom",UserName="tom",Email="tom@hotmail.com"},
-            new User{DisplayName="Jess",UserName="jess",Email="jess@hotmail.com"},
           };
 
         foreach (var user in users)
         {
           await userManager.CreateAsync(user, "Pa$$w0rd");
         }
-      }
-      if (context.JobProfiles.Any()) return;
 
-      var Niche = new List<Niche>{
+        var Niche = new List<Niche>{
         new Niche{Id=1,Title="Frontend"},
         new Niche{Id=2,Title="Backend"},
         new Niche{Id=3,Title="Fullstack"},
       };
 
-      await context.AddRangeAsync(Niche);
+        await context.AddRangeAsync(Niche);
 
-
-      var JobProfiles = new List<JobProfile>
-            {
-               new JobProfile{
-                 Description="test1",
-                 Niche=Niche[0],
-                 CreateAt=DateTime.Now,
-                 Photos="photo1",
-
-               },
-               new JobProfile{
-                 Description="test2",
-                 Niche=Niche[1],
-                 CreateAt=DateTime.Now,
-                 Photos="photo2",
-               }
-            };
-      await context.AddRangeAsync(JobProfiles);
-
-      var links = new List<JobLink>{
+        var links = new List<JobLink>{
               new JobLink {
                 Id=1,
                 URL="link1",
-                JobProfile=JobProfiles[0]
               },
               new JobLink {
                 Id=2,
                 URL="link2",
-                JobProfile=JobProfiles[1]
               }
             };
 
-      await context.AddRangeAsync(links);
+        await context.AddRangeAsync(links);
+
+        var JobProfiles = new List<JobProfile>
+            {
+               new JobProfile{
+                 Description="test1",
+                 ProfileName="First profile",
+                 Niche=Niche[0],
+                 CreateAt=DateTime.Now,
+                 Photos="photo1",
+                 JobLinks=new List<JobLink>{links[0]},
+                 User=users[0]
 
 
-      var jobs = new List<Job>{
-        new Job {JobProfileId=JobProfiles[0].Id,Title="Looking for frontend",Introduction="Hello this is my first job"},
+
+               },
+               new JobProfile{
+                 Description="test2",
+                 ProfileName="Second profile",
+                 Niche=Niche[1],
+                 CreateAt=DateTime.Now,
+                 Photos="photo2",
+                 JobLinks=new List<JobLink>{links[1]},
+                 User=users[0]
+               }
+            };
+        await context.AddRangeAsync(JobProfiles);
+
+
+        var jobs = new List<Job>{
+        new Job {JobProfileId=JobProfiles[0].Id,Title="Looking for frontend",Introduction="Hello this is my first job",User=users[0]},
       };
 
-      await context.AddRangeAsync(jobs);
+        await context.AddRangeAsync(jobs);
 
-      await context.SaveChangesAsync();
+        await context.SaveChangesAsync();
+      }
+
+
+
     }
   }
 }

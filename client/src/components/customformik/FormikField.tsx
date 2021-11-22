@@ -6,9 +6,10 @@ interface IProps {
   name: string;
   type: string;
   error?: boolean;
-  helperText?:string
+  helperText?:string,
+  value?:string
 }
-const FormikField = ({ name, placeholder, type, error,helperText }: IProps) => {
+const FormikField = ({ name, placeholder, type, error,value,helperText }: IProps) => {
   return (
     <div style={{ marginBottom: "10px" }}>
       <Field
@@ -19,6 +20,8 @@ const FormikField = ({ name, placeholder, type, error,helperText }: IProps) => {
         placeholder={placeholder}
         helperText={helperText}
         error={error}
+        value={value}
+        
       />
     </div>
   );

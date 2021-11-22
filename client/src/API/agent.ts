@@ -5,6 +5,7 @@ import { JobProfile } from "../models/JobProfile";
 import { history } from "../index";
 import { store } from "../stores/store";
 import { User, UserFormValues } from "../models/User";
+import { Niche } from "../models/Niche";
 
 const sleep = (delay: number) => {
   return new Promise((resolve) => {
@@ -74,6 +75,7 @@ const profileMangements = {
   create: (jobProfile: JobProfile) => request.post("/profile", jobProfile),
   edit: (jobProfile: JobProfile) =>
     request.put(`profile/${jobProfile.id}`, jobProfile),
+  listNiche: () => request.get<Niche[]>("/profile/niche"),
 };
 
 const jobMangements = {

@@ -3,8 +3,8 @@ import { JobProfile } from "./JobProfile";
 export interface Job{
   id: string;
   title: string;
-  jobProfile: JobProfile|null;
-  jobProfileId: string;
+  jobProfileId?:string,
+  jobProfile?: JobProfile|null;
   introduction: string;
   isShared: boolean;
   isActive: boolean;

@@ -33,7 +33,7 @@ namespace Server
       }
       ).AddFluentValidation(config =>
       {
-        config.RegisterValidatorsFromAssemblyContaining<Create>(includeInternalTypes: true);
+        config.RegisterValidatorsFromAssemblyContaining<Create>();
       });
       services.AddApplicationServices(_config);
       services.AddIdentityServices(_config);

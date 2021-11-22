@@ -6,6 +6,7 @@ export interface UserFormValues{
 }
 
 export interface User{
+  id:string,
   displayName:string,
   token:string,
   userName:string,

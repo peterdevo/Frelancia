@@ -3,38 +3,43 @@ using System.Threading.Tasks;
 using Application;
 using Application.JobProfiles;
 using Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Server.Controllers
 {
+ 
   public class ProfileController : BaseController
   {
 
     [HttpGet]
     public async Task<IActionResult> GetJobProfiles()
     {
-      return HandleResult(await Mediator.Send(new List.Query()));
+      return HandleResult(await Mediator.Send(new List.Query{}));
+    }
+
+    [HttpGet("niche")]
+
+    public async Task<IActionResult> GetNiche(){
+      return HandleResult(await Mediator.Send(new ListNiche.Query()));
     }
 
 
+    // [HttpGet("{id}")]
 
-    [HttpGet("{id}")]
-
-    public async Task<IActionResult> GetJobProfile(Guid id)
-    {
-      return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
-    }
+    // public async Task<IActionResult> GetJobProfile(Guid id)
+    // {
+    //   return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
+    // }
 
     [HttpPost]
 
     public async Task<IActionResult> AddJobProfile(JobProfile jobProfile)
     {
-
       return HandleResult(await Mediator.Send(new Create.Command { JobProfile = jobProfile }));
     }
 
     [HttpPut("{id}")]
-
     public async Task<IActionResult> EditJobProfile(Guid id, JobProfile jobProfile)
     {
 

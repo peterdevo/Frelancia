@@ -3,6 +3,8 @@ import agent from "../API/agent";
 import { JobLink } from "../models/JobLink";
 import { JobProfile } from "../models/JobProfile";
 import { toJS } from "mobx";
+import { Niche } from "../models/Niche";
+import { store } from "./store";
 const { v4: uuid } = require("uuid");
 
 export default class ProfileStore {
@@ -10,11 +12,18 @@ export default class ProfileStore {
   selectedProfile: JobProfile = {
     id: "",
     nicheId: 1,
-    jobLinks: [],
+    profileName: "",
+    userId: "",
+    jobLinks:[
+      {
+        url:""
+      }
+    ],
     photos: "",
     description: "",
     createAt: new Date(Date.now()),
   };
+  listOfNiches: Niche[] = [];
   isLoading = false;
   constructor() {
     makeAutoObservable(this);
@@ -23,15 +32,23 @@ export default class ProfileStore {
   loadProfiles = async () => {
     try {
       const profiles = await agent.profileMangements.list();
-      console.log(toJS(profiles))
+      console.log(toJS(profiles));
       runInAction(() => {
-        this.jobProfiles = [];
-        profiles.forEach((p) => {
-          this.jobProfiles.push(p);
-        });
+        this.jobProfiles = profiles;
       });
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  getNiche = async () => {
+    try {
+      const niches = await agent.profileMangements.listNiche();
+      runInAction(() => {
+        this.listOfNiches = niches;
+      });
+    } catch (error) {
+      throw error;
     }
   };
 
@@ -40,6 +57,9 @@ export default class ProfileStore {
     try {
       jobProfile.id = uuid;
       await agent.profileMangements.create(jobProfile);
+      runInAction(() => {
+        this.jobProfiles.push(jobProfile);
+      });
       this.setLoading(false);
     } catch (error) {
       console.log(error);
@@ -65,11 +85,8 @@ export default class ProfileStore {
     this.selectedProfile.jobLinks = jobLinks;
   }
 
-  setSelectProfile = (e: any) => {
-    const result = this.jobProfiles.find((jp) => jp.id === e);
-    if (result !== undefined) {
-      this.selectedProfile = result;
-    }
+  setSelectProfile = (jp: JobProfile) => {
+    this.selectedProfile = jp;
   };
 
   setLoading = (state: boolean) => {

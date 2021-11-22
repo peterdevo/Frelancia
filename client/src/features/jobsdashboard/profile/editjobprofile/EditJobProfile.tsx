@@ -1,96 +1,131 @@
-import { Button, MenuItem, Select } from "@mui/material";
-import { Form, Formik } from "formik";
+import { Button, FormLabel, getDividerUtilityClass } from "@mui/material";
+import { Box } from "@mui/system";
+import { FieldArray, Form, Formik } from "formik";
+import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import FormikField from "../../../../components/customformik/FormikField";
-import FormikSelect from "../../../../components/customformik/FormikSelect";
+
 import Loading from "../../../../components/Loading";
+import { JobProfile } from "../../../../models/JobProfile";
 import { useStore } from "../../../../stores/store";
 import ListLinks from "../../jobprofile/listoflinks/ListLinks";
-import classes from "./EditJobProfile.module.css";
 
 const EditJobProfile = () => {
-  const { profileStore } = useStore();
-
+  const { profileStore, accountStore, commonStore } = useStore();
+  const [selectedId, setSelectedId] = useState<string>("");
   useEffect(() => {
-    profileStore.loadProfiles();
-  }, [profileStore]);
+    if (commonStore.token) {
+      accountStore.getUser().then(() => profileStore.loadProfiles());
+    }
+  }, [profileStore, accountStore, commonStore]);
 
-  const handleOnchange = (e: any) => {
-    profileStore.setSelectProfile(e.target.value);
+  const handleOnSet = (jp: JobProfile) => {
+    profileStore.setSelectProfile(jp);
+    console.log(toJS(jp));
   };
 
   if (profileStore.isLoading) return <Loading />;
 
   return (
-    <>
-      {profileStore.jobProfiles.length > 0 && (
-        <div>
-          <div className={classes.inputStyle}>
-            <Select
-              value={profileStore.selectedProfile.id}
-              onChange={handleOnchange}
-              fullWidth
+    <Box sx={{ padding: "10px" }}>
+      <FormLabel>Profiles:</FormLabel>
+      <Box
+        sx={{
+          display: "flex",
+          margin: "10px 0",
+          boxShadow: "rgba(99, 99, 99, 0.3) 0px 2px 8px 1px",
+          padding: "15px",
+        }}
+      >
+        {profileStore.jobProfiles
+          .map((item) => ({ ...item, selectedId }))
+          .map((jp) => (
+            <div
+              onClick={() => {
+                setSelectedId(jp.id);
+                const { selectedId, ...rest } = jp;
+                handleOnSet(rest);
+              }}
+              key={jp.id}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
             >
-              {profileStore.jobProfiles.map((profile) => (
-                <MenuItem key={profile.id} value={profile.id}>
-                  {profile.description}
-                </MenuItem>
-              ))}
-            </Select>
-          </div>
-        </div>
-      )}
+              <div
+                style={{
+                  width: "15px",
+                  height: "15px",
+                  borderRadius: "10px",
+                  marginRight: "5px",
+                  background: `${
+                    jp.selectedId === jp.id ? "#678983" : "white"
+                  }`,
+                }}
+              ></div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  marginRight: "10px",
+                  boxShadow: "rgba(99, 99, 99, 0.3) 0px 2px 8px 1px",
+                  padding: "15px",
+                  borderRadius: "5px",
+                }}
+                key={jp.id}
+              >
+                {jp.profileName}
+              </div>
+            </div>
+          ))}
+      </Box>
+
       <Formik
         initialValues={profileStore.selectedProfile}
         enableReinitialize
-        onSubmit={(values) => {}}
+        onSubmit={(values) => {
+          profileStore.editJobProfile(values);
+          console.log(toJS(values));
+        }}
       >
-        {({ handleSubmit, values, handleReset }) => (
+        {({ handleSubmit, values }) => (
           <Form onSubmit={handleSubmit}>
-            <FormikSelect name="nicheId">
-              {[1, 2].map((jp, index) => (
-                <option key={index}>{jp}</option>
-              ))}
-            </FormikSelect>
-
+            <FormLabel>Photos:</FormLabel>
             <FormikField
               placeholder={values.photos}
               name="photos"
               type="field"
+              value={values.photos}
             />
 
-            <div>
-              {values.jobLinks.map((l, index) => {
-                return (
-                  <ListLinks
-                    key={index}
-                    text={l.url}
-                    handleDelete={() => {
-                      profileStore.setUpdatedLinks(
-                        profileStore.selectedProfile.jobLinks.filter(
-                          (link) => link.id !== l.id
-                        )
-                      );
-                      handleReset();
-                    }}
-                  />
-                );
-              })}
-            </div>
-
+            <FieldArray
+              name="jobLinks"
+              render={() => (
+                <div>
+                  {values.jobLinks.map((jp, index) => (
+                    <FormikField key={index} name={`jobLinks[${index}].url`} type="field" value={jp.url} />
+                  ))}
+                </div>
+              )}
+            />
+            <FormLabel>Description:</FormLabel>
             <FormikField
               placeholder="Description"
               name="description"
               type="field"
+              value={values.description}
             />
-            <Button variant="contained" size="medium" type="submit" fullWidth>
+            <Button disabled={selectedId==""&&true} variant="contained" size="medium" type="submit" fullWidth>
               Update
             </Button>
           </Form>
         )}
       </Formik>
-    </>
+    </Box>
   );
 };
 
