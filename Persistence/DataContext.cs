@@ -9,6 +9,7 @@ namespace Persistence
   {
     public DataContext(DbContextOptions options) : base(options)
     {
+      
     }
 
 
@@ -16,5 +17,6 @@ namespace Persistence
     public DbSet<JobLink> JobLinks { get; set; }
     public DbSet<Niche> Niches { get; set; }
     public DbSet<Job> Jobs { get; set; }
+    public DbSet<Photo> Photos { get; set; }
   }
 }

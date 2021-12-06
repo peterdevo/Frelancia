@@ -10,16 +10,15 @@ namespace Domain
   {
     public Guid Id { get; set; }
     public string ProfileName { get; set; }
+
     [JsonIgnore]
     public Niche Niche { get; set; }
     public int NicheId { get; set; }
-    public ICollection<JobLink> JobLinks { get; set; }=new List<JobLink>();
+    public ICollection<JobLink> JobLinks { get; set; } = new List<JobLink>();
     public string UserId { get; set; }
     public User User { get; set; }
-
-    [JsonIgnore]
     public ICollection<Job> Job { get; set; }
-    public string Photos { get; set; }
+    public ICollection<Photo> Photos { get; set; } = new List<Photo>();
     public string Description { get; set; }
     public DateTime CreateAt { get; set; }
   }

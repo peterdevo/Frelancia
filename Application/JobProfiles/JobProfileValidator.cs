@@ -8,6 +8,7 @@ namespace Application.JobProfiles
     public JobProfileValidator()
     {
       RuleFor(jp => jp.NicheId).NotEmpty();
+      RuleFor(jp=>jp.ProfileName).NotEmpty();
       RuleFor(jp => jp.Description).NotEmpty();
       // RuleFor(x => x.JobLinks)
       // .Must(x => x.Count > 0).WithMessage("Links must not be empty");

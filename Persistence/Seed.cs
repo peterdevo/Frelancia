@@ -24,59 +24,73 @@ namespace Persistence
         }
 
         var Niche = new List<Niche>{
-        new Niche{Id=1,Title="Frontend"},
-        new Niche{Id=2,Title="Backend"},
-        new Niche{Id=3,Title="Fullstack"},
-      };
+          new Niche{Id=1,Title="Frontend"},
+          new Niche{Id=2,Title="Backend"},
+          new Niche{Id=3,Title="Fullstack"},
+        };
 
-        await context.AddRangeAsync(Niche);
+          await context.AddRangeAsync(Niche);
 
-        var links = new List<JobLink>{
-              new JobLink {
-                Id=1,
-                URL="link1",
-              },
-              new JobLink {
-                Id=2,
-                URL="link2",
-              }
-            };
+        //   var links = new List<JobLink>{
+        //         new JobLink {
+        //           Id=1,
+        //           URL="link1",
+        //         },
+        //         new JobLink {
+        //           Id=2,
+        //           URL="link2",
+        //         }
+        //       };
 
-        await context.AddRangeAsync(links);
+        //   await context.AddRangeAsync(links);
 
-        var JobProfiles = new List<JobProfile>
-            {
-               new JobProfile{
-                 Description="test1",
-                 ProfileName="First profile",
-                 Niche=Niche[0],
-                 CreateAt=DateTime.Now,
-                 Photos="photo1",
-                 JobLinks=new List<JobLink>{links[0]},
-                 User=users[0]
+        //   var Photos = new List<Photo>{
+        //     new Photo{
+        //         PublicId="1",
+        //         Url="photo1"
+        //     },  new Photo{
+        //         PublicId="2",
+        //         Url="photo2"
+        //     },
+        //   };
+
+        //   await context.AddRangeAsync(Photos);
+
+        //   var JobProfiles = new List<JobProfile>
+        //       {
+        //          new JobProfile{
+        //            Description="test1",
+        //            ProfileName="First profile",
+        //            Niche=Niche[0],
+        //            CreateAt=DateTime.Now,
+        //            Photos=new List<Photo>{
+        //               Photos[0]
+        //            },
+        //            JobLinks=new List<JobLink>{links[0]},
+        //            User=users[0]
 
 
 
-               },
-               new JobProfile{
-                 Description="test2",
-                 ProfileName="Second profile",
-                 Niche=Niche[1],
-                 CreateAt=DateTime.Now,
-                 Photos="photo2",
-                 JobLinks=new List<JobLink>{links[1]},
-                 User=users[0]
-               }
-            };
-        await context.AddRangeAsync(JobProfiles);
+        //          },
+        //          new JobProfile{
+        //            Description="test2",
+        //            ProfileName="Second profile",
+        //            Niche=Niche[1],
+        //            CreateAt=DateTime.Now,
+        //            Photos=new List<Photo>{
+        //               Photos[1]
+        //            },
+        //            JobLinks=new List<JobLink>{links[1]},
+        //            User=users[0]
+        //          }
+        //       };
+        //   await context.AddRangeAsync(JobProfiles);
 
+        //   var jobs = new List<Job>{
+        //   new Job {JobProfileId=JobProfiles[0].Id,Title="Looking for frontend",Introduction="Hello this is my first job",User=users[0]},
+        // };
 
-        var jobs = new List<Job>{
-        new Job {JobProfileId=JobProfiles[0].Id,Title="Looking for frontend",Introduction="Hello this is my first job",User=users[0]},
-      };
-
-        await context.AddRangeAsync(jobs);
-
+        //   await context.AddRangeAsync(jobs);
         await context.SaveChangesAsync();
       }
 

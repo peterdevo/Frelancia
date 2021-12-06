@@ -4,7 +4,6 @@ import { JobLink } from "../models/JobLink";
 import { JobProfile } from "../models/JobProfile";
 import { toJS } from "mobx";
 import { Niche } from "../models/Niche";
-import { store } from "./store";
 const { v4: uuid } = require("uuid");
 
 export default class ProfileStore {
@@ -14,17 +13,18 @@ export default class ProfileStore {
     nicheId: 1,
     profileName: "",
     userId: "",
-    jobLinks:[
+    jobLinks: [
       {
-        url:""
-      }
+        url: "",
+      },
     ],
-    photos: "",
+    photos: [],
     description: "",
     createAt: new Date(Date.now()),
   };
   listOfNiches: Niche[] = [];
   isLoading = false;
+
   constructor() {
     makeAutoObservable(this);
   }
@@ -32,7 +32,6 @@ export default class ProfileStore {
   loadProfiles = async () => {
     try {
       const profiles = await agent.profileMangements.list();
-      console.log(toJS(profiles));
       runInAction(() => {
         this.jobProfiles = profiles;
       });
@@ -52,11 +51,56 @@ export default class ProfileStore {
     }
   };
 
-  createJobProfile = async (jobProfile: JobProfile) => {
+  addPhoto = async (jobProfileId: string, file: File) => {
+    try {
+      this.setLoading(true);
+      const responsePhoto = await agent.profileMangements.addJobProfilePhoto(
+        jobProfileId,
+        file
+      );
+      runInAction(() => {
+        this.jobProfiles.forEach((jp) => {
+          if (jp.id == jobProfileId) {
+            jp.photos.push(responsePhoto);
+          }
+        });
+      });
+
+      this.setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  deletePhoto = async (jobProfileId: string, deleteId: string) => {
+    try {
+      this.setLoading(true);
+      await agent.profileMangements.deleteJobProfilePhoto(
+        jobProfileId,
+        deleteId
+      );
+      runInAction(() => {
+        this.selectedProfile.photos = this.selectedProfile.photos.filter(
+          (p) => p.publicId !== deleteId
+        );
+        this.jobProfiles.forEach((jp) => {
+          if (jp.id === jobProfileId) {
+            jp.photos = this.selectedProfile.photos;
+          }
+        });
+      });
+
+      this.setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  createJobProfile = async (jobProfile: JobProfile, files: File[]) => {
     this.setLoading(true);
     try {
       jobProfile.id = uuid;
-      await agent.profileMangements.create(jobProfile);
+      await agent.profileMangements.create(jobProfile, files);
       runInAction(() => {
         this.jobProfiles.push(jobProfile);
       });
@@ -70,10 +114,10 @@ export default class ProfileStore {
     try {
       this.setLoading(true);
       await agent.profileMangements.edit(jobProfile);
-
       runInAction(() => {
         let index = this.jobProfiles.findIndex((jp) => jp.id === jobProfile.id);
         this.jobProfiles[index] = jobProfile;
+        this.selectedProfile = jobProfile;
         this.setLoading(false);
       });
     } catch (error) {

@@ -31,7 +31,8 @@ namespace Application
       }
       public async Task<Result<List<JobProfile>>> Handle(Query request, CancellationToken cancellationToken)
       {
-        var jp = await _context.JobProfiles.Include(jp => jp.JobLinks).Where(x => x.UserId == _userAccessor.GetUserId()).ToListAsync();
+        var jp = await _context.JobProfiles.Include(jp => jp.JobLinks).Include(jp => jp.Photos).AsSingleQuery()
+          .Where(x => x.UserId == _userAccessor.GetUserId()).ToListAsync();
         if (jp == null) return null;
         return Result<List<JobProfile>>.Success(jp);
       }

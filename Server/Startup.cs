@@ -1,6 +1,7 @@
 
 using Application;
 using FluentValidation.AspNetCore;
+using Infrastructure.Photos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -37,6 +38,7 @@ namespace Server
       });
       services.AddApplicationServices(_config);
       services.AddIdentityServices(_config);
+      services.Configure<CloudinarySetting>(_config.GetSection("Cloudinary"));
 
     }
 

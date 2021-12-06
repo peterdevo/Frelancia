@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Core;
@@ -6,6 +7,7 @@ using Application.JobProfiles;
 using Domain;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -16,6 +18,9 @@ namespace Application
     public class Command : IRequest<Result<Unit>>
     {
       public JobProfile JobProfile { get; set; }
+      public ICollection<IFormFile> Files { get; set; }
+
+
     }
 
     public class CommandValidator : AbstractValidator<Command>
@@ -31,8 +36,10 @@ namespace Application
     {
       private readonly DataContext _context;
       private IUserAccessor _userAccessor;
-      public Handler(DataContext context, IUserAccessor userAccessor)
+      public IPhotoAccessor _photoAccessor;
+      public Handler(DataContext context, IUserAccessor userAccessor, IPhotoAccessor photoAccessor)
       {
+        _photoAccessor = photoAccessor;
         _userAccessor = userAccessor;
         _context = context;
       }
@@ -41,8 +48,24 @@ namespace Application
       {
 
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == _userAccessor.GetUserId());
-        user.JobProfiles.Add(request.JobProfile);
-        _context.JobProfiles.Add(request.JobProfile);
+
+        var requestResult = request.JobProfile;
+
+        foreach (var file in request.Files)
+        {
+          var uploadedResult = await _photoAccessor.AddPhoto(file);
+
+          var photo = new Photo
+          {
+            PublicId = uploadedResult.PublicId,
+            Url = uploadedResult.Url
+          };
+          requestResult.Photos.Add(photo);
+          user.JobProfiles.Add(requestResult);
+
+        }
+
+        _context.JobProfiles.Add(requestResult);
 
         var result = await _context.SaveChangesAsync() > 0;
 

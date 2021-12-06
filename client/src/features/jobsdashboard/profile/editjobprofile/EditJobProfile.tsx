@@ -1,19 +1,21 @@
-import { Button, FormLabel, getDividerUtilityClass } from "@mui/material";
+import { Button, CircularProgress, InputLabel } from "@mui/material";
 import { Box } from "@mui/system";
 import { FieldArray, Form, Formik } from "formik";
 import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
+import { ImageListType } from "react-images-uploading";
 import FormikField from "../../../../components/customformik/FormikField";
-
 import Loading from "../../../../components/Loading";
+import PhotoList from "../../../../components/photocomponents/PhotoList";
+import PhotoUploader from "../../../../components/photocomponents/PhotoUploader";
 import { JobProfile } from "../../../../models/JobProfile";
 import { useStore } from "../../../../stores/store";
-import ListLinks from "../../jobprofile/listoflinks/ListLinks";
 
 const EditJobProfile = () => {
   const { profileStore, accountStore, commonStore } = useStore();
   const [selectedId, setSelectedId] = useState<string>("");
+
   useEffect(() => {
     if (commonStore.token) {
       accountStore.getUser().then(() => profileStore.loadProfiles());
@@ -22,14 +24,14 @@ const EditJobProfile = () => {
 
   const handleOnSet = (jp: JobProfile) => {
     profileStore.setSelectProfile(jp);
-    console.log(toJS(jp));
   };
-
-  if (profileStore.isLoading) return <Loading />;
 
   return (
     <Box sx={{ padding: "10px" }}>
-      <FormLabel>Profiles:</FormLabel>
+      <InputLabel sx={{ margin: "6px" }} htmlFor="my-input">
+        Profiles:
+      </InputLabel>
+
       <Box
         sx={{
           display: "flex",
@@ -46,6 +48,8 @@ const EditJobProfile = () => {
                 setSelectedId(jp.id);
                 const { selectedId, ...rest } = jp;
                 handleOnSet(rest);
+
+                console.log(jp);
               }}
               key={jp.id}
               style={{
@@ -85,43 +89,88 @@ const EditJobProfile = () => {
       </Box>
 
       <Formik
-        initialValues={profileStore.selectedProfile}
+        initialValues={{
+          profile: profileStore.selectedProfile,
+          isLoading: profileStore.isLoading,
+        }}
         enableReinitialize
         onSubmit={(values) => {
-          profileStore.editJobProfile(values);
-          console.log(toJS(values));
+          profileStore.editJobProfile(values.profile);
         }}
       >
-        {({ handleSubmit, values }) => (
+        {({ handleSubmit, values, setFieldValue }) => (
           <Form onSubmit={handleSubmit}>
-            <FormLabel>Photos:</FormLabel>
-            <FormikField
-              placeholder={values.photos}
-              name="photos"
-              type="field"
-              value={values.photos}
-            />
-
-            <FieldArray
-              name="jobLinks"
-              render={() => (
+            {selectedId && (
+              <div>
                 <div>
-                  {values.jobLinks.map((jp, index) => (
-                    <FormikField key={index} name={`jobLinks[${index}].url`} type="field" value={jp.url} />
-                  ))}
+                  <InputLabel sx={{ margin: "6px" }} htmlFor="my-input">
+                    Photo:
+                  </InputLabel>
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <PhotoList
+                      isIndex={false}
+                      isLoading={values.isLoading}
+                      photos={values.profile.photos}
+                      deletePhoto={(publicId) => {
+                        profileStore.deletePhoto(values.profile.id, publicId);
+                      }}
+                    />
+                    <PhotoUploader
+                      removeAll={true}
+                      usePhotoList={false}
+                      buttonName="Add more image"
+                      isLoading={values.isLoading}
+                      getArrayImgs={(images: ImageListType) =>
+                        images.forEach((img: any) => {
+                          profileStore.addPhoto(values.profile.id, img.file);
+                        })
+                      }
+                    />
+                  </div>
                 </div>
-              )}
-            />
-            <FormLabel>Description:</FormLabel>
-            <FormikField
-              placeholder="Description"
-              name="description"
-              type="field"
-              value={values.description}
-            />
-            <Button disabled={selectedId==""&&true} variant="contained" size="medium" type="submit" fullWidth>
-              Update
-            </Button>
+
+                <InputLabel sx={{ margin: "6px" }} htmlFor="my-input">
+                  Links:
+                </InputLabel>
+                <FieldArray
+                  name="jobLinks"
+                  render={() => (
+                    <div>
+                      {values.profile.jobLinks.map((jp, index) => (
+                        <FormikField
+                          key={index}
+                          name={`profile.jobLinks[${index}].url`}
+                          type="field"
+                          value={jp.url}
+                        />
+                      ))}
+                    </div>
+                  )}
+                />
+                <InputLabel sx={{ margin: "6px" }} htmlFor="my-input">
+                  Description:
+                </InputLabel>
+                <FormikField
+                  placeholder="Description"
+                  name="profile.description"
+                  type="field"
+                  value={values.profile.description}
+                />
+
+                <Button
+                  disabled={(selectedId === "" && true) || values.isLoading}
+                  variant="contained"
+                  size="medium"
+                  type="submit"
+                  fullWidth
+                  onClick={() => {
+                    setFieldValue("isLoading", profileStore.isLoading);
+                  }}
+                >
+                  {values.isLoading ? <CircularProgress size={22} /> : "Update"}
+                </Button>
+              </div>
+            )}
           </Form>
         )}
       </Formik>
