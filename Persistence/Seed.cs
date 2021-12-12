@@ -15,7 +15,10 @@ namespace Persistence
       if (!userManager.Users.Any())
       {
         var users = new List<User>{
-            new User{DisplayName="Bob",UserName="bob",Email="bob@hotmail.com"},
+            new User{FirstName="Bob",LastName="Dicker",UserName="bob",Email="bob@hotmail.com", UserPhoto=new UserPhoto{
+              PublicId="",
+              Url=""
+            }},
           };
 
         foreach (var user in users)

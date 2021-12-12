@@ -26,7 +26,7 @@ const JobCreator = () => {
     isActive: true,
   };
 
-  const [selectedId, SetSelectedId] = useState<string>("");
+  const [selectedId, setSelectedId] = useState<string>("");
 
   const validationSchema = yup.object().shape({
     title: yup.string().required(),
@@ -62,7 +62,7 @@ const JobCreator = () => {
             flexDirection: "column",
           }}
         >
-          {profileStore.jobProfiles.length > 0 && (
+          {profileStore.jobProfiles.length > 0 ? (
             <div>
               <FormLabel>Choose your project:</FormLabel>
               <Box
@@ -78,7 +78,7 @@ const JobCreator = () => {
                   .map((jp) => (
                     <div
                       onClick={() => {
-                        SetSelectedId(jp.id);
+                        setSelectedId(jp.id);
                         setFieldValue("jobProfileId", jp.id);
                       }}
                       key={jp.id}
@@ -109,34 +109,50 @@ const JobCreator = () => {
                   ))}
               </Box>
 
-              <FormLabel>Title:</FormLabel>
-              <FormikField placeholder="Title" type="text" name="title" />
-              <FormLabel>Description:</FormLabel>
-              <FormikField
-                placeholder="Introduction"
-                type="text"
-                name="introduction"
-                error={errors.introduction ? true : false}
-                helperText={errors.introduction}
-              />
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <Field type="checkbox" name="isShared" />
-                <Typography>
-                  Your proffesional profile and contacts are allowed to share.
-                </Typography>
-              </div>
-              <ErrorMessage
-                name="isShared"
-                render={() => (
-                  <FormHelperText style={{ color: "red", margin: "10px 10px" }}>
-                    must have your permission before publising job
-                  </FormHelperText>
-                )}
-              />
-              <Button variant="contained" type="submit" fullWidth>
-                Create
-              </Button>
+              {selectedId !== "" && (
+                <>
+                  <FormLabel>Title:</FormLabel>
+                  <FormikField placeholder="Title" type="text" name="title" />
+                  <FormLabel>Description:</FormLabel>
+                  <FormikField
+                    placeholder="Introduction"
+                    type="text"
+                    name="introduction"
+                    error={errors.introduction ? true : false}
+                    helperText={errors.introduction}
+                  />
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <Field type="checkbox" name="isShared" />
+                    <Typography>
+                      Your proffesional profile and contacts are allowed to
+                      share.
+                    </Typography>
+                  </div>
+                  <ErrorMessage
+                    name="isShared"
+                    render={() => (
+                      <FormHelperText
+                        style={{ color: "red", margin: "10px 10px" }}
+                      >
+                        must have your permission before publising job
+                      </FormHelperText>
+                    )}
+                  />
+                  <Button
+                    disabled={selectedId === "" && true}
+                    variant="contained"
+                    type="submit"
+                    fullWidth
+                  >
+                    Create
+                  </Button>
+                </>
+              )}
             </div>
+          ) : (
+            <Typography style={{ margin: "auto" }} variant="h4" component="h3">
+              You don't have any profile to create job!
+            </Typography>
           )}
         </Form>
       )}

@@ -5,7 +5,9 @@ namespace Server.DTOs
   public class RegisterDto
   {
     [Required]
-    public string DisplayName { get; set; }
+    public string FirstName { get; set; }
+    [Required]
+    public string LastName { get; set; }
     [EmailAddress]
     public string Email { get; set; }
     [Required]

@@ -31,10 +31,11 @@ const Register = ({ isOpen, setOpen }: IProps) => {
   const { accountStore } = useStore();
 
   const validationSchema = Yup.object().shape({
-    email: Yup.string().email(),
-    password: Yup.string().required(),
-    displayName: Yup.string().required(),
     userName: Yup.string().required(),
+    password: Yup.string().required(),
+    firstName: Yup.string().required(),
+    lastName: Yup.string().required(),
+    email: Yup.string().email(),
   });
 
   return (
@@ -51,7 +52,8 @@ const Register = ({ isOpen, setOpen }: IProps) => {
         initialValues={{
           email: "",
           password: "",
-          displayName: "",
+          firstName: "",
+          lastName: "",
           userName: "",
           error: null,
         }}
@@ -72,17 +74,13 @@ const Register = ({ isOpen, setOpen }: IProps) => {
             >
               Register
             </Typography>
-            <FormikField name="email" type="text" placeholder="Email" />
-            <FormikField name="password" type="text" placeholder="Password" />
-            <FormikField
-              name="displayName"
-              type="text"
-              placeholder="Display name"
-            />
             <FormikField name="userName" type="text" placeholder="Username" />
+            <FormikField name="password" type="text" placeholder="Password" />
+            <FormikField name="firstName" type="text" placeholder="Last name" />
+            <FormikField name="lastName" type="text" placeholder="Last name" />
+            <FormikField name="email" type="text" placeholder="Email" />
             <ErrorMessage
               name="error"
-            
               render={() => <ValidationErrors errors={errors.error} />}
             />
             <Button

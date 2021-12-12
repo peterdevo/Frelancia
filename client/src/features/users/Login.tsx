@@ -29,7 +29,7 @@ interface IProps {
 }
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string().email(),
+  username: Yup.string().required(),
   password: Yup.string().required(),
 });
 const Login = ({ isOpen, setOpen }: IProps) => {
@@ -46,7 +46,7 @@ const Login = ({ isOpen, setOpen }: IProps) => {
       <Formik
         validationSchema={validationSchema}
         enableReinitialize
-        initialValues={{ email: "", password: "", error: null }}
+        initialValues={{ username: "", password: "", error: null }}
         onSubmit={(values, { setSubmitting, setErrors }) => {
           accountStore
             .login(values)
@@ -69,11 +69,11 @@ const Login = ({ isOpen, setOpen }: IProps) => {
             </Typography>
             ;
             <FormikField
-              name="email"
+              name="username"
               type="text"
-              placeholder="Email"
-              helperText={errors.email}
-              error={errors.email ? true : false}
+              placeholder="Username"
+              helperText={errors.username}
+              error={errors.username ? true : false}
             />
             <FormikField
               name="password"

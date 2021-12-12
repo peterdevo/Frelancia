@@ -20,8 +20,7 @@ const Nav = () => {
     }
   }, [accountStore, commonStore]);
 
-
-  if(!commonStore.appLoaded)return <Loading/>
+  if (!commonStore.appLoaded) return <Loading />;
   return (
     <>
       <CardComponent
@@ -40,8 +39,12 @@ const Nav = () => {
             flexDirection: "column",
           }}
         >
-          <AccountImg />
-          <Typography>{accountStore.user?.displayName}</Typography>
+          <AccountImg
+            isEdit={false}
+            editPhoto={() => console.log()}
+            url={accountStore.user?.userPhoto}
+          />
+          <Typography>{`${accountStore.user?.firstName} ${accountStore.user?.lastName}`}</Typography>
         </Box>
 
         <div>
@@ -56,7 +59,7 @@ const Nav = () => {
             btnColor="#5A8BD4"
           />
           <ButtonComponent
-            path="/dashboard/profile"
+            path="/dashboard/profile/editaccountsetting"
             text="View profile"
             btnColor="#9F5AD4"
           />

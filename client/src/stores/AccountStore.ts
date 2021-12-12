@@ -5,7 +5,14 @@ import { store } from "./store";
 import { history } from "../index";
 
 export default class AccountStore {
-  user: User | null = null;
+  user: User = {
+    id: "",
+    firstName: "",
+    lastName: "",
+    token: "",
+    userName: "",
+    userPhoto: "",
+  };
 
   constructor() {
     makeAutoObservable(this);
@@ -26,7 +33,7 @@ export default class AccountStore {
 
   register = async (userValue: UserFormValues) => {
     try {
-     await agent.account.register(userValue);
+      await agent.account.register(userValue);
     } catch (error) {
       throw error;
     }
@@ -34,7 +41,14 @@ export default class AccountStore {
 
   logOut = () => {
     store.commonStore.setToken("");
-    this.user = null;
+    this.user = {
+      id: "",
+      firstName: "",
+      lastName: "",
+      token: "",
+      userName: "",
+      userPhoto: "",
+    };
     history.push("/");
   };
 
@@ -45,5 +59,9 @@ export default class AccountStore {
     } catch (error) {
       throw error;
     }
+  };
+
+  setPreview = (preview: any) => {
+    this.user.userPhoto = preview;
   };
 }

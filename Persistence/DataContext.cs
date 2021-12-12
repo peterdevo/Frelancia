@@ -12,11 +12,11 @@ namespace Persistence
       
     }
 
-
     public DbSet<JobProfile> JobProfiles { get; set; }
     public DbSet<JobLink> JobLinks { get; set; }
     public DbSet<Niche> Niches { get; set; }
     public DbSet<Job> Jobs { get; set; }
     public DbSet<Photo> Photos { get; set; }
+    public DbSet<UserPhoto> UserPhotos { get; set; }
   }
 }

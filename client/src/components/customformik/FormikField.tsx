@@ -6,10 +6,21 @@ interface IProps {
   name: string;
   type: string;
   error?: boolean;
-  helperText?:string,
-  value?:string
+  helperText?: string;
+  value?: string;
+  row?: number;
+  multiline?: boolean;
 }
-const FormikField = ({ name, placeholder, type, error,value,helperText }: IProps) => {
+const FormikField = ({
+  name,
+  placeholder,
+  type,
+  error,
+  value,
+  helperText,
+  row,
+  multiline,
+}: IProps) => {
   return (
     <div style={{ marginBottom: "10px" }}>
       <Field
@@ -21,7 +32,8 @@ const FormikField = ({ name, placeholder, type, error,value,helperText }: IProps
         helperText={helperText}
         error={error}
         value={value}
-        
+        multiline={multiline}
+        row={row}
       />
     </div>
   );

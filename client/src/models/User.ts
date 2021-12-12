@@ -1,14 +1,30 @@
-export interface UserFormValues{
-  email:string,
-  password:string,
-  displayName?:string,
-  userName?:string
+import { PhotoDto } from "./UserPhoto";
+
+export interface UserFormValues {
+  email?: string;
+  password: string;
+  firstName?: string;
+  lastName?: string;
+  userName?: string;
 }
 
-export interface User{
-  id:string,
-  displayName:string,
-  token:string,
-  userName:string,
-  image:string|null
+export interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+  token: string;
+  userName: string;
+  userPhoto: string;
+}
+
+export interface UpdatedUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  bio: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
+  photoDto:PhotoDto
 }

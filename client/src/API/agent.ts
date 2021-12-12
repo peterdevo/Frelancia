@@ -4,7 +4,7 @@ import { Job } from "../models/Job";
 import { JobProfile } from "../models/JobProfile";
 import { history } from "../index";
 import { store } from "../stores/store";
-import { User, UserFormValues } from "../models/User";
+import { UpdatedUser, User, UserFormValues } from "../models/User";
 import { Niche } from "../models/Niche";
 import { toJS } from "mobx";
 import { Photo } from "../models/Photo";
@@ -125,10 +125,23 @@ const account = {
     request.post<User>("/account/register", userValue),
   getUser: () => request.get<User>("/account"),
 };
+
+const user = {
+  getUpdatedUser: () => request.get<UpdatedUser>("/user"),
+  editUser: (updatedUser: UpdatedUser) => request.put("/user", updatedUser),
+  editImage: (file: File, PhotoId: string, deletedPublicId:string) => {
+    var formData = new FormData();
+    formData.append("file", file);
+    formData.append("id", PhotoId);
+    formData.append("deletedPublicId",deletedPublicId)
+    return axios.put("user/edituserphoto", formData);
+  },
+};
 const agent = {
   profileMangements,
   jobMangements,
   account,
+  user,
 };
 
 export default agent;
