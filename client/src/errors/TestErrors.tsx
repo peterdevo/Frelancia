@@ -24,7 +24,7 @@ const TestErrors = () => {
   };
 
   const handleValidationError = () => {
-    axios.post(baseURl + 'profile',{}).catch(error=>setErrors(error))
+    axios.post(baseURl + 'profile',{}).catch(error=>console.log(error))
   };
 
   const handleBadGuid = () => {

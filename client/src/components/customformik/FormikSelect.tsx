@@ -17,10 +17,11 @@ const FormikSelect = ({ children, name }: Props) => {
         style={{
           marginBottom: "10px",
           padding: "20px 2px",
-          boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+          boxShadow: "rgba(99, 99, 99, 0.1) 0px 2px 8px 0px",
           border:"1px solid lightgray",
           outline:"none",
-          fontSize:"15px"
+          fontSize:"15px",
+          borderRadius:"2px"
           
         }}
       >

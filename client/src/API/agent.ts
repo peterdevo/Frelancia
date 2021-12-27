@@ -14,7 +14,7 @@ const sleep = (delay: number) => {
     setTimeout(resolve, delay);
   });
 };
-axios.defaults.baseURL = "http://localhost:5000";
+axios.defaults.baseURL = "http://localhost:5000/";
 
 axios.interceptors.request.use((config) => {
   const token = store.commonStore.token;
@@ -73,13 +73,12 @@ const request = {
 };
 
 const profileMangements = {
-  list: () => request.get<JobProfile[]>("/profile"),
+  list: () => request.get<JobProfile[]>("profile"),
   create: (jobProfile: JobProfile, files: File[]) => {
     let formData = new FormData();
     files.forEach((file) => {
       formData.append("Files", file);
     });
-
     formData.append("jobProfile.nicheId", jobProfile.nicheId.toString());
     formData.append("jobProfile.profileName", jobProfile.profileName);
     formData.append("jobProfile.description", jobProfile.description);
@@ -87,10 +86,14 @@ const profileMangements = {
       formData.append(`jobProfile.jobLinks[${index}].url`, jl.url);
     });
 
-    return axios.post("/profile", formData);
+    return axios.post("profile", formData);
   },
   edit: (jobProfile: JobProfile) => {
     return request.put(`profile/${jobProfile.id}`, jobProfile);
+  },
+
+  delete: (jobProfileId: string) => {
+    return request.delete(`profile/${jobProfileId}`);
   },
 
   addJobProfilePhoto: (jobProfileId: string, file: File) => {
@@ -99,7 +102,7 @@ const profileMangements = {
     formdata.append("jobProfileId", jobProfileId);
     console.log(jobProfileId);
     return axios
-      .post<Photo>("/profile/addjobprofilephoto", formdata)
+      .post<Photo>("profile/addjobprofilephoto", formdata)
       .then(responseBody);
   },
   listNiche: () => request.get<Niche[]>("/profile/niche"),
@@ -112,28 +115,28 @@ const profileMangements = {
 };
 
 const jobMangements = {
-  list: () => request.get<Job[]>("/job"),
-  create: (job: Job) => request.post("/job", job),
-  edit: (job: Job) => request.put(`/job/${job.id}`, job),
-  delete: (id: string) => request.delete(`/job/${id}`),
+  list: () => request.get<Job[]>("job"),
+  create: (job: Job) => request.post("job", job),
+  edit: (job: Job) => request.put(`job/${job.id}`, job),
+  delete: (id: string) => request.delete(`job/${id}`),
 };
 
 const account = {
   login: (userValue: UserFormValues) =>
-    request.post<User>("/account/login", userValue),
+    request.post<User>("account/login", userValue),
   register: (userValue: UserFormValues) =>
-    request.post<User>("/account/register", userValue),
-  getUser: () => request.get<User>("/account"),
+    request.post<User>("account/register", userValue),
+  getUser: () => request.get<User>("account"),
 };
 
 const user = {
-  getUpdatedUser: () => request.get<UpdatedUser>("/user"),
-  editUser: (updatedUser: UpdatedUser) => request.put("/user", updatedUser),
-  editImage: (file: File, PhotoId: string, deletedPublicId:string) => {
+  getUpdatedUser: () => request.get<UpdatedUser>("user"),
+  editUser: (updatedUser: UpdatedUser) => request.put("user", updatedUser),
+  editImage: (file: File, PhotoId: string, deletedPublicId: string) => {
     var formData = new FormData();
     formData.append("file", file);
     formData.append("id", PhotoId);
-    formData.append("deletedPublicId",deletedPublicId)
+    formData.append("deletedPublicId", deletedPublicId);
     return axios.put("user/edituserphoto", formData);
   },
 };

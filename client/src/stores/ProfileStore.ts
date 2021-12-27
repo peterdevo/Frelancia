@@ -32,11 +32,12 @@ export default class ProfileStore {
   loadProfiles = async () => {
     try {
       const profiles = await agent.profileMangements.list();
+      console.log(toJS(profiles));
       runInAction(() => {
         this.jobProfiles = profiles;
       });
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   };
 
@@ -60,7 +61,7 @@ export default class ProfileStore {
       );
       runInAction(() => {
         this.jobProfiles.forEach((jp) => {
-          if (jp.id == jobProfileId) {
+          if (jp.id === jobProfileId) {
             jp.photos.push(responsePhoto);
           }
         });
@@ -68,7 +69,7 @@ export default class ProfileStore {
 
       this.setLoading(false);
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   };
 
@@ -92,12 +93,11 @@ export default class ProfileStore {
 
       this.setLoading(false);
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   };
 
   createJobProfile = async (jobProfile: JobProfile, files: File[]) => {
-    this.setLoading(true);
     try {
       jobProfile.id = uuid;
       await agent.profileMangements.create(jobProfile, files);
@@ -106,7 +106,7 @@ export default class ProfileStore {
       });
       this.setLoading(false);
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   };
 
@@ -122,6 +122,22 @@ export default class ProfileStore {
       });
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  deleteJobProfile = async (jobProfileId: string) => {
+    try {
+      this.setLoading(true);
+      await agent.profileMangements.delete(jobProfileId);
+      runInAction(
+        () =>
+          (this.jobProfiles = this.jobProfiles.filter(
+            (jp) => jp.id !== jobProfileId
+          ))
+      );
+      this.setLoading(false);
+    } catch (error) {
+      throw error;
     }
   };
 

@@ -3,6 +3,7 @@ import {
   Button,
   CircularProgress,
   Dialog,
+  FormLabel,
   Slide,
   Typography,
 } from "@mui/material";
@@ -67,21 +68,11 @@ const Login = ({ isOpen, setOpen }: IProps) => {
             >
               Login
             </Typography>
-            ;
-            <FormikField
-              name="username"
-              type="text"
-              placeholder="Username"
-              helperText={errors.username}
-              error={errors.username ? true : false}
-            />
-            <FormikField
-              name="password"
-              type="text"
-              placeholder="Password"
-              helperText={errors.password}
-              error={errors.password ? true : false}
-            />
+
+            <FormLabel>Username:</FormLabel>
+            <FormikField name="username" type="text" placeholder="Username" />
+            <FormLabel>Password:</FormLabel>
+            <FormikField name="password" type="text" placeholder="Password" />
             <ErrorMessage
               name="error"
               render={() => (

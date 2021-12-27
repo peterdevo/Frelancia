@@ -1,3 +1,4 @@
+import { Button, Typography } from "@mui/material";
 import React from "react";
 import { NavLink } from "react-router-dom";
 import classes from "./ButtonComponent.module.css";
@@ -14,17 +15,18 @@ const ButtonComponent = ({ path, text, btnColor, height }: IProps) => {
       className={classes.button}
       exact
       to={path}
-      activeStyle={{backgroundImage: `linear-gradient(to right, #FF7777,${btnColor})` }}
+      activeStyle={{
+        boxShadow: `white 5px 5px, ${btnColor} 10px 10px`,
+      }}
       style={{
-        backgroundColor:`${btnColor}`,
+        backgroundColor: `${btnColor}`,
         height: height,
         textDecoration: "None",
-        color:"white",
-        borderRadius:"10px"
-
+        color: "white",
+        borderRadius: "10px",
       }}
     >
-      {text}
+      <Typography> {text}</Typography>
     </NavLink>
   );
 };

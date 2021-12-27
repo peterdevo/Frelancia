@@ -1,11 +1,12 @@
 import { Button, CircularProgress, FormLabel, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { Form, Formik } from "formik";
+import { Field, Form, Formik } from "formik";
 import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import AccountImg from "../../../../components/AccountImg";
 import FormikField from "../../../../components/customformik/FormikField";
+import TextAreaComponent from "../../../../components/customformik/TextAreaComponent";
 import { useStore } from "../../../../stores/store";
 
 const EditAccountSetting = () => {
@@ -45,9 +46,10 @@ const EditAccountSetting = () => {
             style={{
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
-              width: "100%",
-              padding: "20px",
+              justifyContent: "space-around",
+              padding: "10px",
+              boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 1px",
+              margin:"10px 0px"
             }}
           >
             <AccountImg
@@ -62,33 +64,32 @@ const EditAccountSetting = () => {
               }
               url={values.updatedUser.photoDto.url}
             />
+            <Box style={{ display: "flex",flexDirection:"column", margin: "10px 0px" }}>
+              <Box sx={{ width: "100%", marginRight: "10px" }}>
+                <FormLabel>First name:</FormLabel>
+                <FormikField
+                  name="updatedUser.firstName"
+                  type="text"
+                  value={values.updatedUser.firstName}
+                />
+              </Box>
+              <Box sx={{ width: "100%" }}>
+                <FormLabel>Last name:</FormLabel>
+                <FormikField
+                  name="updatedUser.lastName"
+                  type="text"
+                  value={values.updatedUser.lastName}
+                />
+              </Box>
+            </Box>
           </div>
-          <Box style={{ display: "flex", margin: "10px 0px" }}>
-            <Box sx={{ width: "100%", marginRight: "10px" }}>
-              <FormLabel>First name:</FormLabel>
-              <FormikField
-                name="updatedUser.firstName"
-                type="text"
-                value={values.updatedUser.firstName}
-              />
-            </Box>
-            <Box sx={{ width: "100%" }}>
-              <FormLabel>Last name:</FormLabel>
-              <FormikField
-                name="updatedUser.lastName"
-                type="text"
-                value={values.updatedUser.lastName}
-              />
-            </Box>
-          </Box>
 
           <FormLabel>Biography:</FormLabel>
-          <FormikField
+          <Field
             name="updatedUser.bio"
             type="text"
             value={values.updatedUser.bio}
-            multiline={true}
-            row={4}
+            component={TextAreaComponent}
           />
           <Box style={{ display: "flex", margin: "10px 0px" }}>
             <Box sx={{ width: "100%", marginRight: "10px" }}>

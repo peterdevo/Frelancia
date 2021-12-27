@@ -17,11 +17,13 @@ const ProfileManager = () => {
       <Box
         sx={{
           marginBottom: "40px",
-          backgroundColor: "#DFAAAA",
-          width:"100%",
+          background: "rgb(255, 114, 114)",
           display:"flex",
           alignItems:"center",
-          justifyContent:"space-evenly"
+          justifyContent:"space-evenly",
+          borderRadius:"5px",
+          padding:"10px"
+          
         }}
       >
         <TopTab subPath="editaccountsetting" label="Account setting" />

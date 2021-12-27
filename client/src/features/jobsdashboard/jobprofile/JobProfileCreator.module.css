@@ -10,3 +10,8 @@
 .icon:hover{
   background-color: rgb(163, 198, 238);
 }
+
+.links{
+  display: flex;
+  flex-wrap: wrapd;
+}

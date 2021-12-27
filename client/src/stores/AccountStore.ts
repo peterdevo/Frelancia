@@ -33,7 +33,12 @@ export default class AccountStore {
 
   register = async (userValue: UserFormValues) => {
     try {
-      await agent.account.register(userValue);
+      const user = await agent.account.register(userValue);
+      store.commonStore.setToken(user.token);
+      runInAction(() => {
+        this.user = user;
+      });
+      history.push("/dashboard");
     } catch (error) {
       throw error;
     }
@@ -41,21 +46,27 @@ export default class AccountStore {
 
   logOut = () => {
     store.commonStore.setToken("");
-    this.user = {
-      id: "",
-      firstName: "",
-      lastName: "",
-      token: "",
-      userName: "",
-      userPhoto: "",
-    };
+
+    runInAction(() => {
+      this.user = {
+        id: "",
+        firstName: "",
+        lastName: "",
+        token: "",
+        userName: "",
+        userPhoto: "",
+      };
+    });
+
     history.push("/");
   };
 
   getUser = async () => {
     try {
       const user = await agent.account.getUser();
-      this.user = user;
+      runInAction(() => {
+        this.user = user;
+      });
     } catch (error) {
       throw error;
     }

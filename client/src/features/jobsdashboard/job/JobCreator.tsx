@@ -1,11 +1,11 @@
 import {
   Box,
   Button,
-  FormHelperText,
+  CircularProgress,
   FormLabel,
   Typography,
 } from "@mui/material";
-import { Field, Formik, Form, ErrorMessage } from "formik";
+import { Field, Formik, Form, FieldProps } from "formik";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import FormikField from "../../../components/customformik/FormikField";
@@ -13,6 +13,9 @@ import Loading from "../../../components/Loading";
 import { Job } from "../../../models/Job";
 import { useStore } from "../../../stores/store";
 import * as yup from "yup";
+import CustomError from "../../../components/CustomError";
+import TextAreaComponent from "../../../components/customformik/TextAreaComponent";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 
 const JobCreator = () => {
   const { jobStore, profileStore, commonStore, accountStore } = useStore();
@@ -31,7 +34,9 @@ const JobCreator = () => {
   const validationSchema = yup.object().shape({
     title: yup.string().required(),
     introduction: yup.string().required(),
-    isShared: yup.bool().oneOf([true]),
+    isShared: yup
+      .bool()
+      .oneOf([true], "Must agree to share profile and contacts to create job"),
   });
 
   useEffect(() => {
@@ -42,17 +47,24 @@ const JobCreator = () => {
 
   if (profileStore.jobProfiles.length < 0) return <Loading />;
 
+  const checkboxComponent: React.ComponentType<FieldProps> = ({ field }) => (
+    <input
+      type="checkbox"
+      {...field}
+      style={{ width: "18px", height: "18px", margin: "20px 10px 20px 0px" }}
+    />
+  );
+
   return (
     <Formik
       validationSchema={validationSchema}
       enableReinitialize
       initialValues={initalValue}
-      onSubmit={(values) => {
-        console.log(values);
-        jobStore.createJob(values);
+      onSubmit={(values, { resetForm }) => {
+        jobStore.createJob(values).then(() => resetForm());
       }}
     >
-      {({ handleSubmit, errors, setFieldValue }) => (
+      {({ handleSubmit, setFieldValue, errors, isSubmitting }) => (
         <Form
           onSubmit={handleSubmit}
           style={{
@@ -64,13 +76,12 @@ const JobCreator = () => {
         >
           {profileStore.jobProfiles.length > 0 ? (
             <div>
-              <FormLabel>Choose your project:</FormLabel>
+              <FormLabel>Choose your profile to create job:</FormLabel>
               <Box
                 sx={{
                   display: "flex",
-                  margin: "10px 0",
-                  boxShadow: "rgba(99, 99, 99, 0.3) 0px 2px 8px 1px",
-                  padding: "15px",
+                  margin: "20px 0",
+                  flexWrap: "wrap",
                 }}
               >
                 {profileStore.jobProfiles
@@ -90,21 +101,14 @@ const JobCreator = () => {
                         marginRight: "10px",
                         boxShadow: "rgba(99, 99, 99, 0.3) 0px 2px 8px 1px",
                         padding: "15px",
+                        minWidth: "100px",
                         borderRadius: "5px",
                       }}
                     >
-                      <div
-                        style={{
-                          width: "15px",
-                          height: "15px",
-                          borderRadius: "10px",
-                          marginRight: "5px",
-                          background: `${
-                            jp.selectedId === jp.id ? "#678983" : "white"
-                          }`,
-                        }}
-                      ></div>
-                      <div key={jp.id}>{jp.profileName}</div>
+                      {jp.selectedId === jp.id && (
+                        <ArrowRightIcon color="action" fontSize="large" />
+                      )}
+                      <Typography  key={jp.id}>{jp.profileName}</Typography>
                     </div>
                   ))}
               </Box>
@@ -113,46 +117,49 @@ const JobCreator = () => {
                 <>
                   <FormLabel>Title:</FormLabel>
                   <FormikField placeholder="Title" type="text" name="title" />
-                  <FormLabel>Description:</FormLabel>
-                  <FormikField
-                    placeholder="Introduction"
-                    type="text"
+                  <CustomError name="title" error={errors.title} />
+                  <FormLabel>Introduction:</FormLabel>
+                  <Field name="introduction" component={TextAreaComponent} />
+                  <CustomError
                     name="introduction"
-                    error={errors.introduction ? true : false}
-                    helperText={errors.introduction}
+                    error={errors.introduction}
                   />
+
                   <div style={{ display: "flex", alignItems: "center" }}>
-                    <Field type="checkbox" name="isShared" />
+                    <Field name="isShared" component={checkboxComponent} />
+
                     <Typography>
                       Your proffesional profile and contacts are allowed to
                       share.
                     </Typography>
                   </div>
-                  <ErrorMessage
-                    name="isShared"
-                    render={() => (
-                      <FormHelperText
-                        style={{ color: "red", margin: "10px 10px" }}
-                      >
-                        must have your permission before publising job
-                      </FormHelperText>
-                    )}
-                  />
+
+                  <CustomError name="isShared" error={errors.isShared} />
+
                   <Button
-                    disabled={selectedId === "" && true}
+                    disabled={selectedId === "" || isSubmitting}
                     variant="contained"
                     type="submit"
                     fullWidth
                   >
-                    Create
+                    {isSubmitting ? <CircularProgress size={22} /> : "Create"}
                   </Button>
                 </>
               )}
             </div>
           ) : (
-            <Typography style={{ margin: "auto" }} variant="h4" component="h3">
-              You don't have any profile to create job!
-            </Typography>
+            <div
+              style={{
+                minHeight: "80vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Typography variant="h4">
+                You don't have any profile to create job!
+              </Typography>
+            </div>
           )}
         </Form>
       )}

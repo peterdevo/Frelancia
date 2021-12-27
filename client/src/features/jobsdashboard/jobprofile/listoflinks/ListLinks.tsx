@@ -3,16 +3,18 @@ import CloseIcon from "@mui/icons-material/Close";
 
 interface IProps {
   text: string;
-  handleDelete?:()=>void
+  handleDelete?: () => void;
 }
-const ListLinks = ({ text,handleDelete }: IProps) => {
+const ListLinks = ({ text, handleDelete }: IProps) => {
   return (
     <List
       style={{
         marginBottom: "10px",
-        borderRadius: "10px",
-        boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
-        color:"blue"
+        borderRadius: "5px",
+        border: "1px solid lightgray",
+        color: "blue",
+        minWidth: "200px",
+        marginRight:"5px"
       }}
     >
       <ListItem
@@ -22,7 +24,7 @@ const ListLinks = ({ text,handleDelete }: IProps) => {
           </IconButton>
         }
       >
-        <ListItemText primary={text} />
+        <ListItemText primary={text} style={{ marginRight: "10px" }} />
       </ListItem>
     </List>
   );

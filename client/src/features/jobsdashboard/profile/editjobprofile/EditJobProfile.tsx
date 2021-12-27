@@ -1,20 +1,25 @@
-import { Button, CircularProgress, InputLabel } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  InputLabel,
+  Typography,
+} from "@mui/material";
 import { Box } from "@mui/system";
 import { FieldArray, Form, Formik } from "formik";
 import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { ImageListType } from "react-images-uploading";
 import FormikField from "../../../../components/customformik/FormikField";
-import Loading from "../../../../components/Loading";
 import PhotoList from "../../../../components/photocomponents/PhotoList";
 import PhotoUploader from "../../../../components/photocomponents/PhotoUploader";
 import { JobProfile } from "../../../../models/JobProfile";
 import { useStore } from "../../../../stores/store";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 
 const EditJobProfile = () => {
   const { profileStore, accountStore, commonStore } = useStore();
-  const [selectedId, setSelectedId] = useState<string>("");
 
   useEffect(() => {
     if (commonStore.token) {
@@ -25,67 +30,84 @@ const EditJobProfile = () => {
   const handleOnSet = (jp: JobProfile) => {
     profileStore.setSelectProfile(jp);
   };
-
+  console.log(toJS(profileStore.jobProfiles));
   return (
-    <Box sx={{ padding: "10px" }}>
-      <InputLabel sx={{ margin: "6px" }} htmlFor="my-input">
-        Profiles:
-      </InputLabel>
-
-      <Box
-        sx={{
-          display: "flex",
-          margin: "10px 0",
-          boxShadow: "rgba(99, 99, 99, 0.3) 0px 2px 8px 1px",
-          padding: "15px",
-        }}
-      >
-        {profileStore.jobProfiles
-          .map((item) => ({ ...item, selectedId }))
-          .map((jp) => (
+    <Box>
+      <Box sx={{ display: "flex" }}>
+        {profileStore.jobProfiles.length > 0 ? (
+          profileStore.jobProfiles.map((jp) => (
             <div
-              onClick={() => {
-                setSelectedId(jp.id);
-                const { selectedId, ...rest } = jp;
-                handleOnSet(rest);
-
-                console.log(jp);
-              }}
               key={jp.id}
               style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                padding: 10,
+                color: "#2C272E",
               }}
             >
-              <div
-                style={{
-                  width: "15px",
-                  height: "15px",
-                  borderRadius: "10px",
-                  marginRight: "5px",
-                  background: `${
-                    jp.selectedId === jp.id ? "#678983" : "white"
-                  }`,
-                }}
-              ></div>
               <div
                 style={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  cursor: "pointer",
-                  marginRight: "10px",
-                  boxShadow: "rgba(99, 99, 99, 0.3) 0px 2px 8px 1px",
                   padding: "15px",
-                  borderRadius: "5px",
+                  backgroundColor: "white",
+                  boxShadow: "rgba(99, 99, 99, 0.3) 0px 2px 8px 1px",
+                  borderRadius: "7px",
+                  minWidth: "120px",
                 }}
-                key={jp.id}
               >
-                {jp.profileName}
+                {!profileStore.isLoading ? (
+                  <>
+                    <div
+                      style={{
+                        cursor: "pointer",
+                      }}
+                      onClick={() => handleOnSet(jp)}
+                    >
+                      <EditOutlinedIcon />
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        margin: "0px 10px",
+                        borderRadius: "5px",
+                      }}
+                      key={jp.id}
+                    >
+                      <Typography>{jp.profileName}</Typography>
+                    </div>
+                    <div
+                      onClick={() => profileStore.deleteJobProfile(jp.id)}
+                      style={{
+                        cursor: "pointer",
+                      }}
+                    >
+                      <DeleteOutlineIcon />
+                    </div>
+                  </>
+                ) : (
+                  <CircularProgress size={22} />
+                )}
               </div>
             </div>
-          ))}
+          ))
+        ) : (
+          <div
+            style={{
+              textAlign: "center",
+              width: "100%",
+            }}
+          >
+            <Typography
+              style={{ textAlign: "center", marginTop: "30%" }}
+              variant="h4"
+              component="h3"
+            >
+              You don't have any profile!
+            </Typography>
+          </div>
+        )}
       </Box>
 
       <Formik
@@ -100,7 +122,7 @@ const EditJobProfile = () => {
       >
         {({ handleSubmit, values, setFieldValue }) => (
           <Form onSubmit={handleSubmit}>
-            {selectedId && (
+            {values.profile.id && (
               <div>
                 <div>
                   <InputLabel sx={{ margin: "6px" }} htmlFor="my-input">
@@ -158,7 +180,9 @@ const EditJobProfile = () => {
                 />
 
                 <Button
-                  disabled={(selectedId === "" && true) || values.isLoading}
+                  disabled={
+                    (values.profile.id === "" && true) || values.isLoading
+                  }
                   variant="contained"
                   size="medium"
                   type="submit"

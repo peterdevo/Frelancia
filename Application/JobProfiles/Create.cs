@@ -18,8 +18,7 @@ namespace Application
     public class Command : IRequest<Result<Unit>>
     {
       public JobProfile JobProfile { get; set; }
-      public ICollection<IFormFile> Files { get; set; }
-
+      public List<IFormFile> Files { get; set; } = new List<IFormFile>();
 
     }
 
@@ -28,6 +27,7 @@ namespace Application
       public CommandValidator()
       {
         RuleFor(x => x.JobProfile).SetValidator(new JobProfileValidator());
+        RuleForEach(x => x.Files).SetValidator(new FileValidator());
       }
     }
 
@@ -48,23 +48,26 @@ namespace Application
       {
 
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == _userAccessor.GetUserId());
-
         var requestResult = request.JobProfile;
 
-        foreach (var file in request.Files)
+
+        if (request.Files.Count > 0)
         {
-          var uploadedResult = await _photoAccessor.AddPhoto(file);
-
-          var photo = new Photo
+          foreach (var file in request.Files)
           {
-            PublicId = uploadedResult.PublicId,
-            Url = uploadedResult.Url
-          };
-          requestResult.Photos.Add(photo);
-          user.JobProfiles.Add(requestResult);
+            var uploadedResult = await _photoAccessor.AddPhoto(file);
 
+            var photo = new Photo
+            {
+              PublicId = uploadedResult.PublicId,
+              Url = uploadedResult.Url
+            };
+            requestResult.Photos.Add(photo);
+
+          }
         }
 
+        user.JobProfiles.Add(requestResult);
         _context.JobProfiles.Add(requestResult);
 
         var result = await _context.SaveChangesAsync() > 0;

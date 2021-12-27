@@ -22,7 +22,7 @@ const AccountImg = ({ isEdit, editPhoto, url }: IProps) => {
     <div
       onClick={handleClick}
       style={{
-        backgroundImage: url === "" ? `url("/junior.jpg")` : `url(${url})`,
+        backgroundImage: url === "" ? `url("/defaultprofileimg.png")` : `url(${url})`,
         width: "140px",
         height: "140px",
         backgroundRepeat: "no-repeat",

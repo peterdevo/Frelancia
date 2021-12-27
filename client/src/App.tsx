@@ -8,11 +8,20 @@ import Entry from "./features/entrance/Entry";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { useStore } from "./stores/store";
 import { observer } from "mobx-react-lite";
+import { Box } from "@mui/material";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 function App() {
   const { commonStore } = useStore();
+
+  const theme = createTheme({
+    typography: {
+      fontFamily: ["Righteous"].join(","),
+      fontSize: 15,
+    },
+  });
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <ToastContainer position="bottom-right" hideProgressBar />
       <Switch>
         <Route exact path="/" component={Entry} />
@@ -24,7 +33,7 @@ function App() {
         <Route path="/server-error" component={ServerErrors} />
         <Route component={NotFound} />
       </Switch>
-    </>
+    </ThemeProvider>
   );
 }
 
