@@ -25,6 +25,8 @@ export default class ProfileStore {
   listOfNiches: Niche[] = [];
   isLoading = false;
 
+  files: any[] = [];
+
   constructor() {
     makeAutoObservable(this);
   }
@@ -129,12 +131,25 @@ export default class ProfileStore {
     try {
       this.setLoading(true);
       await agent.profileMangements.delete(jobProfileId);
-      runInAction(
-        () =>
-          (this.jobProfiles = this.jobProfiles.filter(
-            (jp) => jp.id !== jobProfileId
-          ))
-      );
+      runInAction(() => {
+        this.jobProfiles = this.jobProfiles.filter(
+          (jp) => jp.id !== jobProfileId
+        );
+        this.selectedProfile = {
+          id: "",
+          nicheId: 1,
+          profileName: "",
+          userId: "",
+          jobLinks: [
+            {
+              url: "",
+            },
+          ],
+          photos: [],
+          description: "",
+          createAt: new Date(Date.now()),
+        };
+      });
       this.setLoading(false);
     } catch (error) {
       throw error;
@@ -148,6 +163,20 @@ export default class ProfileStore {
   setSelectProfile = (jp: JobProfile) => {
     this.selectedProfile = jp;
   };
+
+  setFiles(file: any) {
+    this.files.push(file);
+  }
+  deleteFiles(index: number) {
+    runInAction(() => {
+      this.files.forEach((e) => {
+        this.files.splice(index, 1);
+      });
+      if (this.files.includes(undefined)) {
+        this.files = [];
+      }
+    });
+  }
 
   setLoading = (state: boolean) => {
     this.isLoading = state;

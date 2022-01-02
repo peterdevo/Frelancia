@@ -11,7 +11,8 @@ namespace Server.DTOs
     [EmailAddress]
     public string Email { get; set; }
     [Required]
-    [StringLength(8, MinimumLength = 4)]
+    [RegularExpression("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,32}$",
+     ErrorMessage ="Password must have at least 0-8 characters,one digit,one lowercase character,one uppercase character")]
     public string Password { get; set; }
     [Required]
     public string Username { get; set; }

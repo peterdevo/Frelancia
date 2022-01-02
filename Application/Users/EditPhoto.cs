@@ -19,8 +19,7 @@ namespace Application.Users
     {
       public IFormFile File { get; set; }
       public int Id { get; set; }
-
-      public string DeletedPublicId { get; set; }
+      
     }
 
     public class Handler : IRequestHandler<Command, Result<PhotoDto>>
@@ -45,15 +44,13 @@ namespace Application.Users
 
         if (user == null) return null;
 
-
         var responsePhoto = await _photoAccessor.AddPhoto(request.File);
-
-        if (request.DeletedPublicId!=null)
-        {
-          await _photoAccessor.DeletePhoto(request.DeletedPublicId);
-        }
-
         var nPhoto = await _context.UserPhotos.FirstOrDefaultAsync(p => p.Id == request.Id);
+
+        if (nPhoto.PublicId!="")
+        {
+          await _photoAccessor.DeletePhoto(nPhoto.PublicId);
+        }
 
         nPhoto.PublicId = responsePhoto.PublicId;
         nPhoto.Url = responsePhoto.Url;

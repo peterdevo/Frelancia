@@ -16,13 +16,13 @@ const ProfileManager = () => {
     >
       <Box
         sx={{
-          marginBottom: "40px",
+          marginBottom: "10px",
           background: "rgb(255, 114, 114)",
           display:"flex",
           alignItems:"center",
           justifyContent:"space-evenly",
           borderRadius:"5px",
-          padding:"10px"
+          padding:"5px"
           
         }}
       >

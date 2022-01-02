@@ -105,7 +105,7 @@ const JobCreator = () => {
                         borderRadius: "5px",
                       }}
                     >
-                      {jp.selectedId === jp.id && (
+                      {jp.selectedId && (
                         <ArrowRightIcon color="action" fontSize="large" />
                       )}
                       <Typography  key={jp.id}>{jp.profileName}</Typography>

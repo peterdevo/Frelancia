@@ -1,12 +1,11 @@
 import { Button, Typography } from "@mui/material";
-import { Box, minHeight } from "@mui/system";
+import { Box } from "@mui/system";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import AccountImg from "../../../components/AccountImg";
 import ButtonComponent from "../../../components/ButtonComponent";
 import CardComponent from "../../../components/CardComponent";
 import Loading from "../../../components/Loading";
-import Viewer from "../../../components/Viewer";
 import { useStore } from "../../../stores/store";
 import LogoutIcon from "@mui/icons-material/Logout";
 

@@ -2,6 +2,7 @@ import { createContext, useContext } from "react";
 import AccountStore from "./AccountStore";
 import { CommonStore } from "./CommonStore";
 import JobStore from "./JobStore";
+import MarketStore from "./MarketStore";
 import ProfileStore from "./ProfileStore";
 import UserStore from "./UserStore";
 
@@ -11,6 +12,7 @@ interface Store {
   commonStore:CommonStore
   accountStore:AccountStore
   userStore:UserStore
+  marketStore:MarketStore
 }
 
 export const store: Store = {
@@ -19,6 +21,7 @@ export const store: Store = {
   commonStore:new CommonStore(),
   accountStore:new AccountStore(),
   userStore:new UserStore(),
+  marketStore:new MarketStore()
 
 };
 

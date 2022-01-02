@@ -3,24 +3,26 @@ import React from "react";
 import ImageUploading, { ImageListType } from "react-images-uploading";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import PhotoList from "./PhotoList";
+import { useStore } from "../../stores/store";
 
 interface IProps {
   getArrayImgs: (imageList: ImageListType) => void;
   buttonName: string;
   isLoading?: boolean;
   usePhotoList?: boolean;
-  removeAll?:boolean
+  removeAll?: boolean;
 }
 const PhotoUploader = ({
   getArrayImgs,
   buttonName,
   isLoading,
   usePhotoList,
-  removeAll
+  removeAll,
 }: IProps) => {
   const [images, setImages] = React.useState([]);
   const maxNumber = 69;
 
+  const { profileStore } = useStore();
   const onChange = (
     imageList: ImageListType,
     addUpdateIndex: number[] | undefined
@@ -51,7 +53,10 @@ const PhotoUploader = ({
               <PhotoList
                 isIndex={true}
                 photos={imageList}
-                deletePhoto={(index) => onImageRemove(index)}
+                deletePhoto={(index) => {
+                  onImageRemove(index);
+                  profileStore.deleteFiles(index);
+                }}
               />
             )}
             <Button

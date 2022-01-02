@@ -15,16 +15,12 @@ const EditAccountSetting = () => {
     userStore.getUpdatedUser();
   }, [userStore]);
 
-  const editPhoto = async (
-    file: File,
-    photoId: string,
-    deletedPublicId: string,
-    preview: any
-  ) => {
-    await userStore.editImage(file, photoId, deletedPublicId);
+  const editPhoto = async (file: File, photoId: string, preview: any) => {
+    await userStore.editImage(file, photoId);
     userStore.setPreview(preview);
     accountStore.setPreview(preview);
   };
+  console.log(toJS(userStore.updatedUser))
   return (
     <Formik
       enableReinitialize
@@ -38,7 +34,7 @@ const EditAccountSetting = () => {
     >
       {({ values, handleSubmit, setFieldValue }) => (
         <Form onSubmit={handleSubmit} style={{ padding: 10 }}>
-          <Typography variant="h5" component="h3">
+          <Typography variant="h6" component="h3" sx={{marginBottom:"2px"}}>
             Account
           </Typography>
 
@@ -49,22 +45,23 @@ const EditAccountSetting = () => {
               justifyContent: "space-around",
               padding: "10px",
               boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 1px",
-              margin:"10px 0px"
+              
             }}
           >
             <AccountImg
               isEdit={true}
-              editPhoto={(file: File, preview) =>
-                editPhoto(
-                  file,
-                  values.updatedUser.photoDto.id,
-                  values.updatedUser.photoDto.publicId,
-                  preview
-                )
+              editPhoto={(file: File, preview: any) =>
+                editPhoto(file, values.updatedUser.photoDto.id, preview)
               }
               url={values.updatedUser.photoDto.url}
             />
-            <Box style={{ display: "flex",flexDirection:"column", margin: "10px 0px" }}>
+            <Box
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                margin: "10px 0px",
+              }}
+            >
               <Box sx={{ width: "100%", marginRight: "10px" }}>
                 <FormLabel>First name:</FormLabel>
                 <FormikField
@@ -106,6 +103,24 @@ const EditAccountSetting = () => {
                 name="updatedUser.city"
                 type="text"
                 value={values.updatedUser.city}
+              />
+            </Box>
+          </Box>
+          <Box style={{ display: "flex", margin: "10px 0px" }}>
+            <Box sx={{ width: "100%", marginRight: "10px" }}>
+              <FormLabel>Social media:</FormLabel>
+              <FormikField
+                name="updatedUser.socialMedia"
+                type="text"
+                value={values.updatedUser.socialMedia}
+              />
+            </Box>
+            <Box sx={{ width: "100%", marginRight: "10px" }}>
+              <FormLabel>Language:</FormLabel>
+              <FormikField
+                name="updatedUser.language"
+                type="text"
+                value={values.updatedUser.language}
               />
             </Box>
           </Box>

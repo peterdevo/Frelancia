@@ -26,5 +26,7 @@ export interface UpdatedUser {
   state: string;
   zipCode: string;
   country: string;
-  photoDto:PhotoDto
+  language: string;
+  socialMedia: string;
+  photoDto: PhotoDto;
 }

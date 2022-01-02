@@ -12,6 +12,8 @@ export default class UserStore {
     state: "",
     zipCode: "",
     country: "",
+    socialMedia:"",
+    language:"",
     photoDto: {
       id: "",
       publicId: "",
@@ -35,6 +37,8 @@ export default class UserStore {
         state: "",
         zipCode: "",
         country: "",
+        language:"",
+        socialMedia:"",
         photoDto: {
           id: "",
           publicId: "",
@@ -68,10 +72,10 @@ export default class UserStore {
     }
   };
 
-  editImage = async (file: File, photoId: string,deletedPublicId:string) => {
+  editImage = async (file: File, photoId: string) => {
     try {
       this.setLoading(true);
-      await agent.user.editImage(file, photoId,deletedPublicId);
+      await agent.user.editImage(file, photoId);
       this.setLoading(false);
     } catch (error) {
       console.log(error);

@@ -1,12 +1,12 @@
 import {
   Button,
-  IconButton,
   ImageListItem,
   Toolbar,
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import Login from "../users/Login";
 import Register from "../users/Register";
 
@@ -18,14 +18,12 @@ const Entry = () => {
       <div>
         <Box sx={{ flexGrow: 1, backgroundColor: "none" }}>
           <Toolbar>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              sx={{ mr: 2 }}
-            ></IconButton>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1,fontFamily:'Righteous' }}>
+            
+            <Typography
+              variant="h5"
+              component="div"
+              sx={{ flexGrow: 1, fontFamily: "Righteous" }}
+            >
               Frelancia
             </Typography>
             <Button
@@ -67,15 +65,15 @@ const Entry = () => {
           alignItems: "center",
         }}
       >
-        <ImageListItem sx={{ maxWidth: "400px"}}>
-          <img src="/junior.jpg" alt="img"  />
+        <ImageListItem sx={{ maxWidth: "400px" }}>
+          <img src="/junior.jpg" alt="img" />
         </ImageListItem>
 
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "space-between",
             flexDirection: "column",
           }}
         >
@@ -86,11 +84,25 @@ const Entry = () => {
               color: "#686868",
               marginTop: "10px",
               padding: "20px",
-              
             }}
           >
             Frelancia let you decide your own path.
           </Typography>
+
+          <Link
+            style={{
+              textDecoration: "none",
+              marginTop: "50px",
+              fontFamily: "Righteous",
+              backgroundColor: "#B85252",
+              padding: "10px",
+              color: "white",
+              borderRadius: "3px",
+            }}
+            to={"/jobmarket"}
+          >
+            Go to marketplace
+          </Link>
         </Box>
       </Box>
     </>

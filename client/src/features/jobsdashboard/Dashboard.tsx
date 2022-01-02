@@ -17,7 +17,7 @@ const DashBoard = () => {
     <Layout>
       <Box sx={{ flexGrow: 1 }}>
         <Toolbar>
-          <Typography sx={{ flexGrow: 1, fontSize: "20px", fontFamily: "" }}>
+          <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
             Frelancia
           </Typography>
         </Toolbar>

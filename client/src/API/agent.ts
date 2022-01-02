@@ -8,6 +8,7 @@ import { UpdatedUser, User, UserFormValues } from "../models/User";
 import { Niche } from "../models/Niche";
 import { toJS } from "mobx";
 import { Photo } from "../models/Photo";
+import { JobDetail, JobIntroduction } from "../models/JobMarket";
 
 const sleep = (delay: number) => {
   return new Promise((resolve) => {
@@ -110,7 +111,7 @@ const profileMangements = {
     var formData = new FormData();
     formData.append("deletedId", deletedId);
     formData.append("jobProfileId", jobProfileId);
-    return axios.put("/profile/updatephoto", formData);
+    return axios.put("profile/updatephoto", formData);
   },
 };
 
@@ -132,19 +133,23 @@ const account = {
 const user = {
   getUpdatedUser: () => request.get<UpdatedUser>("user"),
   editUser: (updatedUser: UpdatedUser) => request.put("user", updatedUser),
-  editImage: (file: File, PhotoId: string, deletedPublicId: string) => {
+  editImage: (file: File, PhotoId: string) => {
     var formData = new FormData();
     formData.append("file", file);
     formData.append("id", PhotoId);
-    formData.append("deletedPublicId", deletedPublicId);
     return axios.put("user/edituserphoto", formData);
   },
 };
+const market={
+  getJobs:()=>request.get<JobIntroduction[]>("market"),
+  getJobDetail:(id:string)=>request.get<JobDetail>(`market/${id}`)
+}
 const agent = {
   profileMangements,
   jobMangements,
   account,
   user,
+  market
 };
 
 export default agent;

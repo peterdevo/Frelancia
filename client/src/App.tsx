@@ -8,8 +8,9 @@ import Entry from "./features/entrance/Entry";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { useStore } from "./stores/store";
 import { observer } from "mobx-react-lite";
-import { Box } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import Main from "./features/market/Main";
+import Detail from "./features/market/Detail";
 
 function App() {
   const { commonStore } = useStore();
@@ -25,11 +26,14 @@ function App() {
       <ToastContainer position="bottom-right" hideProgressBar />
       <Switch>
         <Route exact path="/" component={Entry} />
+        <Route exact path="/jobmarket" component={Main} />
+        <Route exact path="/detail/:id" component={Detail} />
         <ProtectedRoute
           isAuth={commonStore.token ? true : false}
           path="/dashboard"
           component={DashBoard}
         />
+
         <Route path="/server-error" component={ServerErrors} />
         <Route component={NotFound} />
       </Switch>

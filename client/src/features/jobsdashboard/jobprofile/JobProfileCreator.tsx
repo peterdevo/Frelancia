@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import classes from "./JobProfileCreator.module.css";
 import AddIcon from "@mui/icons-material/Add";
-import { Formik, Form, FieldArray, FieldProps, Field } from "formik";
+import { Formik, Form, FieldArray, Field } from "formik";
 import { useEffect, useState } from "react";
 import { JobProfile } from "../../../models/JobProfile";
 import { useStore } from "../../../stores/store";
@@ -18,15 +18,14 @@ import FormikField from "../../../components/customformik/FormikField";
 import FormikSelect from "../../../components/customformik/FormikSelect";
 import PhotoUploader from "../../../components/photocomponents/PhotoUploader";
 import * as Yup from "yup";
-import { toJS } from "mobx";
 import CustomError from "../../../components/CustomError";
 import TextAreaComponent from "../../../components/customformik/TextAreaComponent";
 import ValidationErrors from "../../../errors/ValidationErrors";
+import { toJS } from "mobx";
 
 const JobProfileCreator = () => {
   const [addedLinks, setAddedLinks] = useState("");
   const { profileStore, commonStore, accountStore } = useStore();
-  const [file, setFile] = useState<any>([]);
   const [validationErrors, setValidationErrors] = useState<string[]>();
   const initalValue: JobProfile = {
     id: "",
@@ -52,6 +51,7 @@ const JobProfileCreator = () => {
   });
 
   if (profileStore.isLoading) return <Loading />;
+  console.log(toJS(profileStore.files));
   return (
     <Formik
       validationSchema={validationSchema}
@@ -61,7 +61,7 @@ const JobProfileCreator = () => {
           values.nicheId = profileStore.listOfNiches[0].id;
         }
         profileStore
-          .createJobProfile(values, file)
+          .createJobProfile(values, profileStore.files)
           .catch((error) => setValidationErrors(error))
           .finally(() => resetForm());
       }}
@@ -156,10 +156,8 @@ const JobProfileCreator = () => {
               usePhotoList={true}
               removeAll={false}
               buttonName="Upload image"
-              getArrayImgs={(image) => {
-                image?.forEach((element) => {
-                  setFile([...file, element?.file]);
-                });
+              getArrayImgs={(images) => {
+                profileStore.setFiles(images[images.length - 1]?.file);
               }}
             />
 
@@ -181,7 +179,11 @@ const JobProfileCreator = () => {
               type="submit"
               fullWidth
             >
-              {isSubmitting ? <CircularProgress size={22} /> :  <Typography> Create</Typography>}
+              {isSubmitting ? (
+                <CircularProgress size={22} />
+              ) : (
+                <Typography> Create</Typography>
+              )}
             </Button>
 
             {validationErrors?.length! > 0 && (

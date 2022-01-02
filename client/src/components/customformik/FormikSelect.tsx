@@ -21,7 +21,8 @@ const FormikSelect = ({ children, name }: Props) => {
           border:"1px solid lightgray",
           outline:"none",
           fontSize:"15px",
-          borderRadius:"2px"
+          borderRadius:"2px",
+          fontFamily:"Righteous"
           
         }}
       >
