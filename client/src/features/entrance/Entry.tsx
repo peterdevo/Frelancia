@@ -1,12 +1,9 @@
-import {
-  Button,
-  ImageListItem,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { Button, ImageListItem, Toolbar, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import Footer from "../../components/Footer";
+import MainLayout from "../../layout/MainLayout";
 import Login from "../users/Login";
 import Register from "../users/Register";
 
@@ -14,45 +11,42 @@ const Entry = () => {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   return (
-    <>
-      <div>
-        <Box sx={{ flexGrow: 1, backgroundColor: "none" }}>
-          <Toolbar>
-            
-            <Typography
-              variant="h5"
-              component="div"
-              sx={{ flexGrow: 1, fontFamily: "Righteous" }}
-            >
-              Frelancia
-            </Typography>
-            <Button
-              style={{
-                backgroundColor: "#F0EAEA",
-                color: "black",
-                marginRight: "10px",
-              }}
-              onClick={() => setIsLoginOpen(true)}
-              color="inherit"
-            >
-              Login
-            </Button>
-            <Button
-              style={{ backgroundColor: "#F0EAEA", color: "black" }}
-              onClick={() => setIsRegisterOpen(true)}
-              color="inherit"
-            >
-              Register
-            </Button>
-          </Toolbar>
-        </Box>
+    <MainLayout>
+      <Box sx={{display:"flex",justifyContent:"space-between"}} >
+          <Typography
+            variant="h5"
+            component="div"
+            sx={{ flexGrow: 1, fontFamily: "Righteous" }}
+          >
+            Frelancia
+          </Typography>
+          <Button
+            style={{
+              backgroundColor: "#F0EAEA",
+              color: "black",
+              marginRight: "10px",
+            }}
+            onClick={() => setIsLoginOpen(true)}
+            color="inherit"
+          >
+            Login
+          </Button>
+          <Button
+            style={{ backgroundColor: "#F0EAEA", color: "black" }}
+            onClick={() => setIsRegisterOpen(true)}
+            color="inherit"
+          >
+            Register
+          </Button>
+       
+      </Box>
 
-        <Login isOpen={isLoginOpen} setOpen={() => setIsLoginOpen(false)} />
-        <Register
-          isOpen={isRegisterOpen}
-          setOpen={() => setIsRegisterOpen(false)}
-        />
-      </div>
+      <Login isOpen={isLoginOpen} setOpen={() => setIsLoginOpen(false)} />
+      <Register
+        isOpen={isRegisterOpen}
+        setOpen={() => setIsRegisterOpen(false)}
+      />
+
       <Box
         sx={{
           minHeight: "70vh",
@@ -104,8 +98,9 @@ const Entry = () => {
             Go to marketplace
           </Link>
         </Box>
+        <Footer />
       </Box>
-    </>
+    </MainLayout>
   );
 };
 

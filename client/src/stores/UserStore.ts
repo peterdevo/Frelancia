@@ -1,6 +1,8 @@
 import { makeAutoObservable, runInAction, toJS } from "mobx";
 import agent from "../API/agent";
 import { UpdatedUser } from "../models/User";
+import {toast} from "react-toastify";
+
 
 export default class UserStore {
   updatedUser: UpdatedUser = {
@@ -55,6 +57,8 @@ export default class UserStore {
         }
         this.updatedUser = obj;
       });
+      
+
     } catch (error) {
       console.log(error);
     }
@@ -65,8 +69,9 @@ export default class UserStore {
       this.setLoading(true);
       await agent.user.editUser(updatedUser);
       this.updatedUser = updatedUser;
-      
+      toast.success("User has successfully updated.")
       this.setLoading(false);
+      
     } catch (error) {
       console.log(error);
     }

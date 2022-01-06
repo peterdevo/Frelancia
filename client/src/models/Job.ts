@@ -1,7 +1,7 @@
 import { JobProfile } from "./JobProfile";
 
 export interface Job{
-  id: string;
+  id?: string;
   title: string;
   jobProfileId?:string,
   jobProfile?: JobProfile|null;

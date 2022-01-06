@@ -15,12 +15,11 @@ interface IProps {
 }
 const MarketCard = ({ title, introduction,viewDetail }: IProps) => {
   return (
-    <Card sx={{ width: "300px",cursor:"none",marginRight:"10px",marginBottom:"10px" }}>
+    <Card sx={{ width: "300px",height: "300px",cursor:"none",marginRight:"20px",marginBottom:"20px" }}>
       <CardActionArea >
         <Box
           sx={{
-            background:
-              "repeating-radial-gradient(circle,purple,purple 10px,#4b026f 10px,#4b026f 20px)",
+            backgroundColor:"rgb(253, 193, 193)",
             width: "100%",
             height: "70px",
           }}

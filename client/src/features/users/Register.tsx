@@ -75,7 +75,7 @@ const Register = ({ isOpen, setOpen }: IProps) => {
               Register
             </Typography>
             <FormikField name="userName" type="text" placeholder="Username" />
-            <FormikField name="password" type="text" placeholder="Password" />
+            <FormikField name="password" type="password" placeholder="Password" />
             <FormikField name="firstName" type="text" placeholder="First name" />
             <FormikField name="lastName" type="text" placeholder="Last name" />
             <FormikField name="email" type="text" placeholder="Email" />

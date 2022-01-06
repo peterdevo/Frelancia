@@ -24,6 +24,7 @@ const FormikField = ({
         type={type}
         value={value}
         placeholder={placeholder}
+        autoComplete='off'
         
       />
     </div>

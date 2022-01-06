@@ -72,7 +72,7 @@ const Login = ({ isOpen, setOpen }: IProps) => {
             <FormLabel>Username:</FormLabel>
             <FormikField name="username" type="text" placeholder="Username" />
             <FormLabel>Password:</FormLabel>
-            <FormikField name="password" type="text" placeholder="Password" />
+            <FormikField name="password" type="password" placeholder="Password" />
             <ErrorMessage
               name="error"
               render={() => (

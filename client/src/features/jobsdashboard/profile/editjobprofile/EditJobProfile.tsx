@@ -22,15 +22,13 @@ const EditJobProfile = () => {
   const { profileStore, accountStore, commonStore } = useStore();
 
   useEffect(() => {
-    if (commonStore.token) {
-      accountStore.getUser().then(() => profileStore.loadProfiles());
-    }
-  }, [profileStore, accountStore, commonStore]);
+    profileStore.loadProfiles();
+  }, [profileStore]);
 
   const handleOnSet = (jp: JobProfile) => {
     profileStore.setSelectProfile(jp);
   };
-  console.log(toJS(profileStore.jobProfiles));
+
   return (
     <Box>
       <Box sx={{ display: "flex" }}>

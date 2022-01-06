@@ -20,6 +20,7 @@ namespace Server.Controllers
     [HttpPost]
     public async Task<IActionResult> CreateJob(Job job)
     {
+      
       return HandleResult(await Mediator.Send(new Create.Command { Job = job }));
     }
 

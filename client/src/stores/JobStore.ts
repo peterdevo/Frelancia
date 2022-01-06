@@ -1,4 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
+import { toast } from "react-toastify";
 import agent from "../API/agent";
 import { Job } from "../models/Job";
 const { v4: uuid } = require("uuid");
@@ -23,11 +24,11 @@ export default class JobStore {
   createJob = async (job: Job) => {
     this.setLoading(true);
     try {
-      job.id = uuid;
       await agent.jobMangements.create(job);
       runInAction(() => {
         this.jobs.push(job);
       });
+      toast.success("Job has successfully created.");
       this.setLoading(false);
     } catch (error) {
       console.log(error);
@@ -58,7 +59,7 @@ export default class JobStore {
     try {
       await agent.jobMangements.edit(this.selectedJob);
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   };
 
@@ -68,16 +69,19 @@ export default class JobStore {
     try {
       await agent.jobMangements.edit(this.selectedJob);
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   };
 
   setDeleteJob = async (id: string) => {
-    agent.jobMangements.delete(id);
+    await agent.jobMangements.delete(id);
     try {
-      this.jobs = [...this.jobs.filter((j) => j.id !== id)];
+      runInAction(() => {
+        this.jobs = [...this.jobs.filter((j) => j.id !== id)];
+      });
+      toast.success("Job has successfully deleted.");
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   };
 }

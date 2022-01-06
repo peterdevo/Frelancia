@@ -1,10 +1,10 @@
 import { makeAutoObservable, runInAction } from "mobx";
+import { toast } from "react-toastify";
 import agent from "../API/agent";
 import { JobLink } from "../models/JobLink";
 import { JobProfile } from "../models/JobProfile";
 import { toJS } from "mobx";
 import { Niche } from "../models/Niche";
-const { v4: uuid } = require("uuid");
 
 export default class ProfileStore {
   jobProfiles: JobProfile[] = [];
@@ -33,8 +33,8 @@ export default class ProfileStore {
 
   loadProfiles = async () => {
     try {
+      this.jobProfiles = [];
       const profiles = await agent.profileMangements.list();
-      console.log(toJS(profiles));
       runInAction(() => {
         this.jobProfiles = profiles;
       });
@@ -101,11 +101,12 @@ export default class ProfileStore {
 
   createJobProfile = async (jobProfile: JobProfile, files: File[]) => {
     try {
-      jobProfile.id = uuid;
       await agent.profileMangements.create(jobProfile, files);
       runInAction(() => {
         this.jobProfiles.push(jobProfile);
       });
+      console.log(toJS(this.jobProfiles));
+      toast.success("Profile has successfully created.");
       this.setLoading(false);
     } catch (error) {
       throw error;
@@ -121,6 +122,7 @@ export default class ProfileStore {
         this.jobProfiles[index] = jobProfile;
         this.selectedProfile = jobProfile;
         this.setLoading(false);
+        toast.success("Profile has successfully updated.");
       });
     } catch (error) {
       console.log(error);
@@ -151,6 +153,7 @@ export default class ProfileStore {
         };
       });
       this.setLoading(false);
+      toast.success("Profile has successfully deleted.");
     } catch (error) {
       throw error;
     }

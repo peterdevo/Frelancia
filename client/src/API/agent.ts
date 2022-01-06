@@ -9,6 +9,7 @@ import { Niche } from "../models/Niche";
 import { toJS } from "mobx";
 import { Photo } from "../models/Photo";
 import { JobDetail, JobIntroduction } from "../models/JobMarket";
+import { PaginationResult } from "../models/Pagination";
 
 const sleep = (delay: number) => {
   return new Promise((resolve) => {
@@ -26,6 +27,15 @@ axios.interceptors.request.use((config) => {
 axios.interceptors.response.use(
   async (response) => {
     await sleep(1000);
+    const pagination = response.headers["pagination"];
+    if (pagination) {
+      response.data = new PaginationResult(
+        response.data,
+        JSON.parse(pagination)
+      );
+      return response as AxiosResponse<PaginationResult<any>>;
+    }
+
     return response;
   },
   (error) => {
@@ -140,16 +150,19 @@ const user = {
     return axios.put("user/edituserphoto", formData);
   },
 };
-const market={
-  getJobs:()=>request.get<JobIntroduction[]>("market"),
-  getJobDetail:(id:string)=>request.get<JobDetail>(`market/${id}`)
-}
+const market = {
+  getJobs: (params: URLSearchParams) =>
+    axios
+      .get<PaginationResult<JobIntroduction[]>>("market", { params })
+      .then(responseBody),
+  getJobDetail: (id: string) => request.get<JobDetail>(`market/${id}`),
+};
 const agent = {
   profileMangements,
   jobMangements,
   account,
   user,
-  market
+  market,
 };
 
 export default agent;

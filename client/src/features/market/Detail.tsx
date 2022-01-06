@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { useStore } from "../../stores/store";
 import { ExternalLink } from "react-external-link";
 import { toJS } from "mobx";
+import MainLayout from "../../layout/MainLayout";
 
 const Detail = () => {
   const { id } = useParams<{ id: string }>();
@@ -14,9 +15,8 @@ const Detail = () => {
     marketStore.getJobDetail(id);
   }, [marketStore]);
 
-  console.log(toJS(marketStore.jobDetail));
   return (
-    <>
+    <MainLayout>
       <Typography
         variant="h5"
         component="div"
@@ -27,45 +27,34 @@ const Detail = () => {
       >
         Frelancia
       </Typography>
-      <Box
-        sx={{
-          padding: "90px",
-          boxShadow: "#2D4263 0px 2px 8px 0px",
-          width: "60%",
-          margin: "40px auto ",
-          minHeight: "70vh",
-          marginTop: "40px",
-          borderRadius: "2% 6% 5% 4% / 1% 1% 2% 4%",
-          position: "relative",
-          "&::after": {
-            content: `''`,
-            boxShadow: "#30475E 0px 2px 8px 0px",
-            display: "block",
-            width: "100%",
-            height: "100%",
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform:
-              "translate3d(-50%, -50%, 0) scale(1.015) rotate(0.5deg) ",
-            borderRadius: "1% 1% 2% 4% / 2% 6% 5% 4%",
-          },
-        }}
-      >
-        {Object.keys(marketStore.jobDetail).length > 0 && (
+
+      {Object.keys(marketStore.jobDetail).length > 0 && (
+        <Box
+          sx={{
+            padding: "90px",
+            width: "60%",
+            margin: "40px auto ",
+            minHeight: "70vh",
+            marginTop: "40px",
+            borderRadius: "2% 6% 5% 4% / 1% 1% 2% 4%",
+            boxShadow: "#4479e1 0px 2px 8px 2px",
+          }}
+        >
           <Box>
             <Box
               sx={{
                 display: "flex",
-                justifyContent: "space-around",
+                justifyContent: "space-between",
                 alignItems: "center",
               }}
             >
               <Box
                 sx={{
                   display: "flex",
+                  justifyContent: "space-between",
                   flexDirection: "column",
                   alignItems: "center",
+                  marginBottom: "20px",
                 }}
               >
                 <Box
@@ -128,14 +117,7 @@ const Detail = () => {
                 <Typography>{marketStore.jobDetail.socialMedia}</Typography>
               </Box>
             </Box>
-            <Box
-              sx={{
-                width: "85%",
-                margin: "20px auto",
-                padding: "10px",
-                marginTop: "20px",
-              }}
-            >
+            <Box>
               <Box
                 sx={{
                   display: "flex",
@@ -162,14 +144,7 @@ const Detail = () => {
                 <Typography>{marketStore.jobDetail.bio}</Typography>
               </Box>
             </Box>
-            <Box
-              sx={{
-                width: "85%",
-                margin: "20px auto",
-                padding: "10px",
-                marginTop: "20px",
-              }}
-            >
+            <Box>
               <FormLabel>My works:</FormLabel>
 
               <Box
@@ -200,41 +175,35 @@ const Detail = () => {
 
             <Box
               sx={{
-                width: "85%",
-                margin: "20px auto",
+                boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
                 padding: "10px",
-                marginTop: "20px",
               }}
             >
               <FormLabel>Links to my works:</FormLabel>
-              {marketStore.jobDetail.jobLinks.map((jl) => (
-                <List
-                  key={jl.id}
-                  style={{
-                    marginBottom: "10px",
-                    borderRadius: "5px",
-                    border: "1px solid lightgray",
-                    color: "blue",
-                    minWidth: "100px",
-                    maxWidth: "400px",
-                    marginRight: "5px",
-                    marginTop: "20px",
-                    textAlign: "center",
-                  }}
-                >
+              <br></br>
+              <Box sx={{display:"flex"}}>
+                {marketStore.jobDetail.jobLinks.map((jl) => (
                   <ExternalLink href={jl.url}>
                     <ListItemText
                       primary={jl.url}
-                      style={{ marginRight: "10px" }}
+                      style={{
+                        marginRight: "10px",
+                        marginTop: "5px",
+                        color: "white",
+                        backgroundColor: "#4479e1",
+                        display: "inline-block",
+                        padding: "10px",
+                        borderRadius: "10px",
+                      }}
                     />
                   </ExternalLink>
-                </List>
-              ))}
+                ))}
+              </Box>
             </Box>
           </Box>
-        )}
-      </Box>
-    </>
+        </Box>
+      )}
+    </MainLayout>
   );
 };
 

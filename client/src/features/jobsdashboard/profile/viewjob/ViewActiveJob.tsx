@@ -98,7 +98,7 @@ const ViewActiveJob = () => {
                 variant="contained"
                 size="small"
                 type="submit"
-                onClick={() => jobStore.setDeleteJob(job.id)}
+                onClick={() => jobStore.setDeleteJob(job?.id!)}
               >
                 Delete job
               </Button>

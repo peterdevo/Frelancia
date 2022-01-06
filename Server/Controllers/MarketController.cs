@@ -2,6 +2,7 @@
 
 using System;
 using System.Threading.Tasks;
+using Application.Core;
 using Application.Market;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,9 +15,9 @@ namespace Server.Controllers
   {
 
     [HttpGet]
-    public async Task<IActionResult> GetAllJobs()
+    public async Task<IActionResult> GetAllJobs([FromQuery] PagingParams param)
     {
-      return HandleResult(await Mediator.Send(new List.Query { }));
+      return HandlePagedResult(await Mediator.Send(new List.Query {Params=param }));
     }
 
     [HttpGet("{id}")]

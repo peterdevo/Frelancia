@@ -25,7 +25,7 @@ import { toJS } from "mobx";
 
 const JobProfileCreator = () => {
   const [addedLinks, setAddedLinks] = useState("");
-  const { profileStore, commonStore, accountStore } = useStore();
+  const { profileStore } = useStore();
   const [validationErrors, setValidationErrors] = useState<string[]>();
   const initalValue: JobProfile = {
     id: "",
@@ -37,12 +37,9 @@ const JobProfileCreator = () => {
     description: "",
     createAt: new Date(Date.now()),
   };
-
   useEffect(() => {
-    if (commonStore.token) {
-      accountStore.getUser().then(() => profileStore.getNiche());
-    }
-  }, [profileStore, commonStore, accountStore]);
+    profileStore.getNiche();
+  }, [profileStore]);
 
   const validationSchema = Yup.object().shape({
     profileName: Yup.string().required("Must have name"),
@@ -51,7 +48,7 @@ const JobProfileCreator = () => {
   });
 
   if (profileStore.isLoading) return <Loading />;
-  console.log(toJS(profileStore.files));
+
   return (
     <Formik
       validationSchema={validationSchema}
@@ -152,14 +149,18 @@ const JobProfileCreator = () => {
               )}
             />
 
-            <PhotoUploader
-              usePhotoList={true}
-              removeAll={false}
-              buttonName="Upload image"
-              getArrayImgs={(images) => {
-                profileStore.setFiles(images[images.length - 1]?.file);
-              }}
-            />
+            {isSubmitting ? (
+              <CircularProgress size={22} />
+            ) : (
+              <PhotoUploader
+                usePhotoList={true}
+                removeAll={false}
+                buttonName="Upload image"
+                getArrayImgs={(images) => {
+                  profileStore.setFiles(images[images.length - 1]?.file);
+                }}
+              />
+            )}
 
             <InputLabel sx={{ margin: "6px" }} htmlFor="my-input">
               Description:

@@ -16,6 +16,7 @@ namespace Domain
         public string Introduction { get; set; }
         public bool IsShared { get; set; }=false;
         public bool IsActive { get; set; }=true;
+        public DateTime CreatedAt { get; set; }
         
     }
 }

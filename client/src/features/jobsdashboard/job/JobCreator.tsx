@@ -16,20 +16,20 @@ import * as yup from "yup";
 import CustomError from "../../../components/CustomError";
 import TextAreaComponent from "../../../components/customformik/TextAreaComponent";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import { toJS } from "mobx";
 
 const JobCreator = () => {
   const { jobStore, profileStore, commonStore, accountStore } = useStore();
 
+  const [selectedId, setSelectedId] = useState("");
+
   const initalValue: Job = {
-    id: "",
     title: "",
     jobProfileId: "",
     introduction: "",
     isShared: false,
     isActive: true,
   };
-
-  const [selectedId, setSelectedId] = useState<string>("");
 
   const validationSchema = yup.object().shape({
     title: yup.string().required(),
@@ -40,13 +40,14 @@ const JobCreator = () => {
   });
 
   useEffect(() => {
-    if (commonStore.token) {
-      accountStore.getUser().then(() => profileStore.loadProfiles());
-    }
-  }, [profileStore, commonStore, accountStore]);
+    profileStore.loadProfiles();
+  }, [profileStore]);
+
+  console.log(toJS(profileStore.jobProfiles))
 
   if (profileStore.jobProfiles.length < 0) return <Loading />;
 
+  console.log(toJS(profileStore.jobProfiles));
   const checkboxComponent: React.ComponentType<FieldProps> = ({ field }) => (
     <input
       type="checkbox"
@@ -61,10 +62,14 @@ const JobCreator = () => {
       enableReinitialize
       initialValues={initalValue}
       onSubmit={(values, { resetForm }) => {
+        values.jobProfileId = selectedId;
+        console.log(values);
+
+        
         jobStore.createJob(values).then(() => resetForm());
       }}
     >
-      {({ handleSubmit, setFieldValue, errors, isSubmitting }) => (
+      {({ handleSubmit, errors, isSubmitting }) => (
         <Form
           onSubmit={handleSubmit}
           style={{
@@ -84,14 +89,10 @@ const JobCreator = () => {
                   flexWrap: "wrap",
                 }}
               >
-                {profileStore.jobProfiles
-                  .map((item) => ({ ...item, selectedId }))
-                  .map((jp) => (
+                {profileStore.jobProfiles.length > 0 &&
+                  profileStore.jobProfiles.map((jp) => (
                     <div
-                      onClick={() => {
-                        setSelectedId(jp.id);
-                        setFieldValue("jobProfileId", jp.id);
-                      }}
+                      onClick={() => setSelectedId(jp.id)}
                       key={jp.id}
                       style={{
                         display: "flex",
@@ -105,10 +106,10 @@ const JobCreator = () => {
                         borderRadius: "5px",
                       }}
                     >
-                      {jp.selectedId && (
+                      {selectedId === jp.id && (
                         <ArrowRightIcon color="action" fontSize="large" />
                       )}
-                      <Typography  key={jp.id}>{jp.profileName}</Typography>
+                      <Typography key={jp.id}>{jp.profileName}</Typography>
                     </div>
                   ))}
               </Box>
@@ -137,7 +138,7 @@ const JobCreator = () => {
                   <CustomError name="isShared" error={errors.isShared} />
 
                   <Button
-                    disabled={selectedId === "" || isSubmitting}
+                    disabled={isSubmitting}
                     variant="contained"
                     type="submit"
                     fullWidth

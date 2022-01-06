@@ -1,24 +1,39 @@
-import { Box, Typography } from "@mui/material";
+import { Box, LinearProgress, Typography } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import MarketCard from "../../components/marketcomponents/MarketCard";
 import { useStore } from "../../stores/store";
 import { useHistory } from "react-router-dom";
-
+import Footer from "../../components/Footer";
+import MainLayout from "../../layout/MainLayout";
+import CustomPagination from "../../components/marketcomponents/CustomPagination";
+import { PagingParams } from "../../models/Pagination";
+import { toJS } from "mobx";
+import CustomMenu from "../../components/marketcomponents/CustomMenu";
 
 const Main = () => {
-  const { marketStore } = useStore();
+  const { marketStore, profileStore } = useStore();
+  const { setPagingParams, pagination, getJobs, jobs, loading } = marketStore;
+  const { getNiche, listOfNiches } = profileStore;
+
   useEffect(() => {
-    marketStore.getJobs();
+    getJobs();
+    getNiche();
   }, [marketStore]);
+
+  const setOnPageChange = (page: number) => {
+    setPagingParams(new PagingParams(page));
+    getJobs();
+  };
 
   const history = useHistory();
 
   const viewDetail = (id: string) => {
     history.push(`/detail/${id}`);
   };
+
   return (
-    <div>
+    <MainLayout>
       <Typography
         variant="h5"
         component="div"
@@ -27,9 +42,10 @@ const Main = () => {
         Frelancia
       </Typography>
 
-      <Box sx={{ marginTop: "100px", display:"flex", }}>
-        {marketStore.jobs.length > 0 &&
-          marketStore.jobs.map((j) => (
+      <Box sx={{width:"90%",margin:"auto"}}>
+        <CustomMenu niches={listOfNiches} />
+        <Box sx={{ display: "flex", flexWrap: "wrap", height: "100vh" }}>
+          {marketStore.jobs.map((j) => (
             <MarketCard
               key={j.id}
               title={j.title}
@@ -37,8 +53,29 @@ const Main = () => {
               viewDetail={() => viewDetail(j.id)}
             />
           ))}
+        </Box>
+
+        {pagination && (
+          <Box>
+            <Typography
+              sx={{ textAlign: "center", fontSize: "14px", color: "gray" }}
+            >
+              {pagination.totalItems} active applicants
+            </Typography>
+            <Box sx={{ display: "flex" }}>
+              <CustomPagination
+                setCurrentPage={(page) => setOnPageChange(page)}
+                totalPages={pagination!.totalPages}
+              />
+            </Box>
+          </Box>
+        )}
+        {loading && (
+          <LinearProgress color="secondary" sx={{ marginTop: "50px" }} />
+        )}
       </Box>
-    </div>
+      <Footer />
+    </MainLayout>
   );
 };
 
