@@ -20,10 +20,10 @@ namespace Application.JobProfiles
     public class Handler : IRequestHandler<Command, Result<Unit>>
     {
       private DataContext _context;
-      private IPhotoAccessor _photoAccessor;
-      public Handler(DataContext context, IPhotoAccessor photoAccessor)
+      private IFileAccessor _fileAccessor;
+      public Handler(DataContext context, IFileAccessor fileAccessor)
       {
-        _photoAccessor = photoAccessor;
+        _fileAccessor = fileAccessor;
         _context = context;
 
       }
@@ -50,13 +50,22 @@ namespace Application.JobProfiles
         {
           foreach (var photo in photos)
           {
-            await _photoAccessor.DeletePhoto(photo.PublicId);
+            await _fileAccessor.DeleteFile(photo.PublicId);
+          }
+        }
+
+        var jobFiles = _context.JobFiles.Where(p => p.JobProfileId == jobProfile.Id);
+        if (jobFiles.Count() > 0)
+        {
+          foreach (var jobFile in jobFiles)
+          {
+            await _fileAccessor.DeleteFile(jobFile.PublicId);
           }
         }
 
         var result = await _context.SaveChangesAsync() > 0;
 
-        if (!result) return Result<Unit>.Failure("Failed to delete job profile");
+        if (!result) return Result<Unit>.Failure("Fail to delete job profile");
 
         return Result<Unit>.Success(Unit.Value);
 

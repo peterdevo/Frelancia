@@ -9,6 +9,7 @@ export default class MarketStore {
   pagingParams = new PagingParams();
   pagination: Pagination | null = null;
   loading = false;
+  nichId = 0;
 
   constructor() {
     makeAutoObservable(this);
@@ -21,10 +22,15 @@ export default class MarketStore {
     this.pagingParams = pagingParams;
   };
 
+  setFilterNicheId = (nicheId: number) => {
+    this.nichId = nicheId;
+  };
   get axiosParams() {
     const params = new URLSearchParams();
     params.append("pageNumber", this.pagingParams.pageNumber.toString());
     params.append("pageSize", this.pagingParams.pageSize.toString());
+    params.append("nicheId", this.nichId.toString());
+
     return params;
   }
 

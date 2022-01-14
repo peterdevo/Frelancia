@@ -1,7 +1,7 @@
 using Application;
 using Application.Core;
 using Application.Interfaces;
-using Infrastructure.Photos;
+using Infrastructure.FilesUploader;
 using Infrastructure.Security;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -20,8 +20,8 @@ namespace Server.Extensions
 
       services.AddMediatR(typeof(List.Handler).Assembly);
       services.AddAutoMapper(typeof(MappingProfile).Assembly);
-      services.AddScoped<IUserAccessor,UserAccessor>();
-      services.AddScoped<IPhotoAccessor,PhotoAccessor>();
+      services.AddScoped<IUserAccessor, UserAccessor>();
+      services.AddScoped<IFileAccessor, FileAccessor>();
 
       services.AddCors(options =>
          {

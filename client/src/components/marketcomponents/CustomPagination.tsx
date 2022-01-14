@@ -11,7 +11,7 @@ const CustomPagination = ({ totalPages, setCurrentPage }: IProps) => {
     setCurrentPage(page);
   };
 
-  return (
+  return (  
     <Pagination
       sx={{ margin:"20px auto",padding:"10px"}}
       size="large"

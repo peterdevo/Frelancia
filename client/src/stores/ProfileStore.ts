@@ -18,14 +18,15 @@ export default class ProfileStore {
         url: "",
       },
     ],
+    jobFiles: [],
     photos: [],
     description: "",
     createAt: new Date(Date.now()),
   };
   listOfNiches: Niche[] = [];
   isLoading = false;
-
-  files: any[] = [];
+  imageFiles: any[] = [];
+  jobFiles: any[] = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -33,6 +34,21 @@ export default class ProfileStore {
 
   loadProfiles = async () => {
     try {
+      this.selectedProfile = {
+        id: "",
+        nicheId: 1,
+        profileName: "",
+        userId: "",
+        jobLinks: [
+          {
+            url: "",
+          },
+        ],
+        jobFiles: [],
+        photos: [],
+        description: "",
+        createAt: new Date(Date.now()),
+      };
       this.jobProfiles = [];
       const profiles = await agent.profileMangements.list();
       runInAction(() => {
@@ -99,13 +115,16 @@ export default class ProfileStore {
     }
   };
 
-  createJobProfile = async (jobProfile: JobProfile, files: File[]) => {
+  createJobProfile = async (
+    jobProfile: JobProfile,
+    imageFiles: File[],
+    jobFiles: File[]
+  ) => {
     try {
-      await agent.profileMangements.create(jobProfile, files);
+      await agent.profileMangements.create(jobProfile, imageFiles, jobFiles);
       runInAction(() => {
         this.jobProfiles.push(jobProfile);
       });
-      console.log(toJS(this.jobProfiles));
       toast.success("Profile has successfully created.");
       this.setLoading(false);
     } catch (error) {
@@ -147,6 +166,7 @@ export default class ProfileStore {
               url: "",
             },
           ],
+          jobFiles: [],
           photos: [],
           description: "",
           createAt: new Date(Date.now()),
@@ -154,6 +174,58 @@ export default class ProfileStore {
       });
       this.setLoading(false);
       toast.success("Profile has successfully deleted.");
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  addLink = async (jobProfileId: string, jobLink: JobLink) => {
+    try {
+      const response = await agent.profileMangements.addLink(
+        jobProfileId,
+        jobLink
+      );
+      this.selectedProfile.jobLinks.push(response);
+    } catch (error) {
+      throw error;
+    }
+  };
+  deleteUpdatedLink = async (id: number) => {
+    try {
+      await agent.profileMangements.deleteLink(id);
+      runInAction(() => {
+        this.selectedProfile.jobLinks = this.selectedProfile.jobLinks.filter(
+          (e) => e.id !== id
+        );
+      });
+
+      console.log(toJS(this.selectedProfile.jobLinks));
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  addFile = async (jobProfileId: string, file: File) => {
+    try {
+      const response = await agent.profileMangements.AddFile(
+        jobProfileId,
+        file
+      );
+
+      this.selectedProfile.jobFiles.push(response);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  deleteFile = async (jobFileId: number) => {
+    try {
+      await agent.profileMangements.deleteFile(jobFileId);
+      runInAction(() => {
+        this.selectedProfile.jobFiles = this.selectedProfile.jobFiles.filter(
+          (e) => e.id !== jobFileId
+        );
+      });
     } catch (error) {
       throw error;
     }
@@ -167,17 +239,33 @@ export default class ProfileStore {
     this.selectedProfile = jp;
   };
 
-  setFiles(file: any) {
-    this.files.push(file);
-  }
-  deleteFiles(index: number) {
+  setJobFiles(file: File) {
+    if (file == undefined) return;
     runInAction(() => {
-      this.files.forEach((e) => {
-        this.files.splice(index, 1);
+      this.jobFiles.push(file);
+    });
+
+    console.log("hello", toJS(this.jobFiles));
+  }
+  setDeleteJobFiles(index: number) {
+    runInAction(() => {
+      this.jobFiles.forEach((e) => {
+        this.jobFiles.splice(index, 1);
       });
-      if (this.files.includes(undefined)) {
-        this.files = [];
-      }
+    });
+    console.log(toJS(this.jobFiles));
+  }
+
+  setImageFiles(file: any) {
+    if (file === undefined) return;
+    this.imageFiles.push(file);
+  }
+
+  setDeleteImageFiles(index: number) {
+    runInAction(() => {
+      this.imageFiles.forEach((e) => {
+        this.imageFiles.splice(index, 1);
+      });
     });
   }
 

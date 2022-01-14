@@ -1,7 +1,7 @@
 import { Button, CircularProgress } from "@mui/material";
 import React from "react";
 import ImageUploading, { ImageListType } from "react-images-uploading";
-import UploadFileIcon from "@mui/icons-material/UploadFile";
+import PhotoCameraBackIcon from '@mui/icons-material/PhotoCameraBack';
 import PhotoList from "./PhotoList";
 import { useStore } from "../../stores/store";
 
@@ -25,7 +25,6 @@ const PhotoUploader = ({
   const { profileStore } = useStore();
   const onChange = (
     imageList: ImageListType,
-    addUpdateIndex: number[] | undefined
   ) => {
     getArrayImgs(imageList);
     setImages(imageList as never[]);
@@ -46,16 +45,14 @@ const PhotoUploader = ({
           dragProps,
           onImageRemoveAll,
         }) => (
-          <div
-            style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
-          >
+          <div>
             {usePhotoList && (
               <PhotoList
                 isIndex={true}
                 photos={imageList}
                 deletePhoto={(index) => {
                   onImageRemove(index);
-                  profileStore.deleteFiles(index);
+                  profileStore.setDeleteImageFiles(index);
                 }}
               />
             )}
@@ -63,8 +60,8 @@ const PhotoUploader = ({
               type="button"
               variant="contained"
               disabled={isLoading}
-              endIcon={<UploadFileIcon />}
-              style={{ margin: "5px 0px", minWidth: "100px" }}
+              endIcon={<PhotoCameraBackIcon />}
+              style={{ margin: "5px 0px", minWidth: "100px",backgroundColor:"#FFAB76" }}
               onClick={() => {
                 onImageUpload();
                 removeAll && onImageRemoveAll();

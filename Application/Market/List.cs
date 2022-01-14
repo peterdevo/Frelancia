@@ -18,7 +18,7 @@ namespace Application.Market
 
     public class Query : IRequest<Result<PagedList<JobDto>>>
     {
-      public PagingParams Params { get; set; }
+      public MarketParams Params { get; set; }
     }
 
     public class Handler : IRequestHandler<Query, Result<PagedList<JobDto>>>
@@ -33,7 +33,13 @@ namespace Application.Market
 
       public async Task<Result<PagedList<JobDto>>> Handle(Query request, CancellationToken cancellationToken)
       {
-        var query = _context.Jobs.OrderBy(p=>p.CreatedAt).ProjectTo<JobDto>(_mapper.ConfigurationProvider).AsQueryable();
+        var query = _context.Jobs.OrderBy(p => p.CreatedAt).ProjectTo<JobDto>(_mapper.ConfigurationProvider).AsQueryable();
+
+        if (request.Params.NicheId > 0)
+        {
+          query = query.Where(p => p.NicheId == request.Params.NicheId);
+        }
+
         return Result<PagedList<JobDto>>.Success(await PagedList<JobDto>.CreateAsync(query, request.Params.PageNumber, request.Params.PageSize));
       }
     }

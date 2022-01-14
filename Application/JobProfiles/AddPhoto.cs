@@ -23,12 +23,12 @@ namespace Application.JobProfiles
 
     public class Handler : IRequestHandler<Command, Result<Photo>>
     {
-      public IPhotoAccessor _photoAccessor;
+      public IFileAccessor _fileAccessor;
       public DataContext _context;
-      public Handler(DataContext context, IPhotoAccessor photoAccessor)
+      public Handler(DataContext context, IFileAccessor fileAccessor)
       {
         _context = context;
-        _photoAccessor = photoAccessor;
+        _fileAccessor = fileAccessor;
       }
 
       public async Task<Result<Photo>> Handle(Command request, CancellationToken cancellationToken)
@@ -36,7 +36,7 @@ namespace Application.JobProfiles
 
         var jobProfile = await _context.JobProfiles.FirstOrDefaultAsync(x => x.Id == request.JobProfileId);
 
-        var response = await _photoAccessor.AddPhoto(request.File);
+        var response = await _fileAccessor.AddFile(request.File);
 
         var photo = new Photo
         {
@@ -44,14 +44,17 @@ namespace Application.JobProfiles
           Url = response.Url
         };
 
+        _context.Photos.Add(photo);
+
         jobProfile.Photos.Add(photo);
 
         var result = await _context.SaveChangesAsync() > 0;
 
+        if (!result) return Result<Photo>.Failure("Fail to add image to profile");
 
-        if (result) return Result<Photo>.Success(photo);
+        return Result<Photo>.Success(photo);
 
-        return Result<Photo>.Failure("Fail to add image to profile");
+
 
       }
     }

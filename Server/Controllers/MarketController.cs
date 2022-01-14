@@ -15,7 +15,7 @@ namespace Server.Controllers
   {
 
     [HttpGet]
-    public async Task<IActionResult> GetAllJobs([FromQuery] PagingParams param)
+    public async Task<IActionResult> GetAllJobs([FromQuery] MarketParams param)
     {
       return HandlePagedResult(await Mediator.Send(new List.Query {Params=param }));
     }

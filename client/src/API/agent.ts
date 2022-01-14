@@ -10,6 +10,8 @@ import { toJS } from "mobx";
 import { Photo } from "../models/Photo";
 import { JobDetail, JobIntroduction } from "../models/JobMarket";
 import { PaginationResult } from "../models/Pagination";
+import { JobLink } from "../models/JobLink";
+import { JobFile } from "../models/JobFile";
 
 const sleep = (delay: number) => {
   return new Promise((resolve) => {
@@ -85,10 +87,13 @@ const request = {
 
 const profileMangements = {
   list: () => request.get<JobProfile[]>("profile"),
-  create: (jobProfile: JobProfile, files: File[]) => {
+  create: (jobProfile: JobProfile, files: File[], jobFiles: File[]) => {
     let formData = new FormData();
     files.forEach((file) => {
-      formData.append("Files", file);
+      formData.append("photoFiles", file);
+    });
+    jobFiles.forEach((jobFiles) => {
+      formData.append("jobFiles", jobFiles);
     });
     formData.append("jobProfile.nicheId", jobProfile.nicheId.toString());
     formData.append("jobProfile.profileName", jobProfile.profileName);
@@ -105,6 +110,25 @@ const profileMangements = {
 
   delete: (jobProfileId: string) => {
     return request.delete(`profile/${jobProfileId}`);
+  },
+
+  addLink: (jobProfileId: string, jobLink: JobLink) => {
+    return request.post<JobLink>(`profile/addlink/${jobProfileId}`, jobLink);
+  },
+
+  deleteLink: (id: number) => {
+    return request.delete(`profile/deletelink/${id}`);
+  },
+
+  AddFile: (jobProfileId: string, file: File) => {
+    const formdata = new FormData();
+    formdata.append("id", jobProfileId);
+    formdata.append("file", file);
+    return axios.post<JobFile>("profile/addfile", formdata).then(responseBody);
+  },
+
+  deleteFile: (jobFileId: number) => {
+    return request.delete(`profile/deletefile/${jobFileId}`);
   },
 
   addJobProfilePhoto: (jobProfileId: string, file: File) => {

@@ -13,7 +13,14 @@ import CustomMenu from "../../components/marketcomponents/CustomMenu";
 
 const Main = () => {
   const { marketStore, profileStore } = useStore();
-  const { setPagingParams, pagination, getJobs, jobs, loading } = marketStore;
+  const {
+    setPagingParams,
+    pagination,
+    getJobs,
+    jobs,
+    loading,
+    setFilterNicheId,
+  } = marketStore;
   const { getNiche, listOfNiches } = profileStore;
 
   useEffect(() => {
@@ -23,6 +30,11 @@ const Main = () => {
 
   const setOnPageChange = (page: number) => {
     setPagingParams(new PagingParams(page));
+    getJobs();
+  };
+
+  const filterNiche = (nicheId: number) => {
+    setFilterNicheId(nicheId);
     getJobs();
   };
 
@@ -42,9 +54,12 @@ const Main = () => {
         Frelancia
       </Typography>
 
-      <Box sx={{width:"90%",margin:"auto"}}>
-        <CustomMenu niches={listOfNiches} />
-        <Box sx={{ display: "flex", flexWrap: "wrap", height: "100vh" }}>
+      <Box sx={{ width: "90%", margin: "auto" }}>
+        <CustomMenu
+          setSelectedValue={(selectedValue) => filterNiche(selectedValue)}
+          niches={listOfNiches}
+        />
+        <Box sx={{ display: "flex", flexWrap: "wrap" }}>
           {marketStore.jobs.map((j) => (
             <MarketCard
               key={j.id}
@@ -71,7 +86,7 @@ const Main = () => {
           </Box>
         )}
         {loading && (
-          <LinearProgress color="secondary" sx={{ marginTop: "50px" }} />
+          <LinearProgress color="primary" sx={{ marginTop: "50px" }} />
         )}
       </Box>
       <Footer />

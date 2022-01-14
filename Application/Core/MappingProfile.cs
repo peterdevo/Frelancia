@@ -26,15 +26,15 @@ namespace Application.Core
                                      ForMember(dest => dest.Email, opt => opt.MapFrom(j => j.User.Email)).
                                      ForMember(dest => dest.Language, opt => opt.MapFrom(j => j.User.Language)).
                                      ForMember(dest => dest.SocialMedia, opt => opt.MapFrom(j => j.User.SocialMedia)).
-                                     ForMember(dest => dest.Title, opt => opt.MapFrom(j => j.Title)). 
+                                     ForMember(dest => dest.Title, opt => opt.MapFrom(j => j.Title)).
                                      ForMember(dest => dest.Introduction, opt => opt.MapFrom(j => j.Introduction)).
                                      ForMember(dest => dest.Niche, opt => opt.MapFrom(j => j.JobProfile.Niche.Title)).
                                      ForMember(dest => dest.JobLinks, opt => opt.MapFrom(j => j.JobProfile.JobLinks)).
                                      ForMember(dest => dest.Photos, opt => opt.MapFrom(j => j.JobProfile.Photos)).
                                      ForMember(dest => dest.Description, opt => opt.MapFrom(j => j.JobProfile.Description));
-                                    ;
-                                    
-      CreateMap<Job, JobDto>();
+      ;
+
+      CreateMap<Job, JobDto>().ForMember(des => des.NicheId, opt => opt.MapFrom(opt => opt.JobProfile.NicheId));
     }
   }
 }

@@ -1,7 +1,7 @@
 
 using Application;
 using FluentValidation.AspNetCore;
-using Infrastructure.Photos;
+using Infrastructure.FilesUploader;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

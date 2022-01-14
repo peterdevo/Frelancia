@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Core;
@@ -26,12 +23,12 @@ namespace Application.Users
     {
       private readonly DataContext _context;
       private readonly IUserAccessor _userAccessor;
-      private readonly IPhotoAccessor _photoAccessor;
+      private readonly IFileAccessor _fileAccessor;
       private readonly IMapper _mapper;
-      public Handler(DataContext context, IUserAccessor userAccessor, IPhotoAccessor photoAccessor, IMapper mapper)
+      public Handler(DataContext context, IUserAccessor userAccessor, IFileAccessor fileAccessor, IMapper mapper)
       {
         _mapper = mapper;
-        _photoAccessor = photoAccessor;
+        _fileAccessor = fileAccessor;
         _userAccessor = userAccessor;
         _context = context;
 
@@ -44,12 +41,12 @@ namespace Application.Users
 
         if (user == null) return null;
 
-        var responsePhoto = await _photoAccessor.AddPhoto(request.File);
+        var responsePhoto = await _fileAccessor.AddFile(request.File);
         var nPhoto = await _context.UserPhotos.FirstOrDefaultAsync(p => p.Id == request.Id);
 
         if (nPhoto.PublicId!="")
         {
-          await _photoAccessor.DeletePhoto(nPhoto.PublicId);
+          await _fileAccessor.DeleteFile(nPhoto.PublicId);
         }
 
         nPhoto.PublicId = responsePhoto.PublicId;

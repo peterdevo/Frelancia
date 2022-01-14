@@ -21,7 +21,7 @@ import * as Yup from "yup";
 import CustomError from "../../../components/CustomError";
 import TextAreaComponent from "../../../components/customformik/TextAreaComponent";
 import ValidationErrors from "../../../errors/ValidationErrors";
-import { toJS } from "mobx";
+import CustomFilesUploader from "../../../components/CustomFilesUploader";
 
 const JobProfileCreator = () => {
   const [addedLinks, setAddedLinks] = useState("");
@@ -33,6 +33,7 @@ const JobProfileCreator = () => {
     profileName: "",
     userId: "",
     jobLinks: [],
+    jobFiles: [],
     photos: [],
     description: "",
     createAt: new Date(Date.now()),
@@ -44,7 +45,6 @@ const JobProfileCreator = () => {
   const validationSchema = Yup.object().shape({
     profileName: Yup.string().required("Must have name"),
     description: Yup.string().required("Must have description"),
-    jobLinks: Yup.array().min(1, "Must have link").required(),
   });
 
   if (profileStore.isLoading) return <Loading />;
@@ -58,16 +58,19 @@ const JobProfileCreator = () => {
           values.nicheId = profileStore.listOfNiches[0].id;
         }
         profileStore
-          .createJobProfile(values, profileStore.files)
+          .createJobProfile(values, profileStore.imageFiles, profileStore.jobFiles)
           .catch((error) => setValidationErrors(error))
-          .finally(() => resetForm());
+          .finally(() => {
+            resetForm();
+          });
       }}
     >
-      {({ handleSubmit, errors, values, isSubmitting }) => (
+      {({ handleSubmit, errors, values, isSubmitting,resetForm }) => (
         <Form
           onSubmit={handleSubmit}
           style={{ padding: "20px", height: "100%" }}
         >
+          <Button type="button" onClick={()=>{resetForm()}}>reset form</Button>
           <div>
             <Typography
               variant="h4"
@@ -157,10 +160,12 @@ const JobProfileCreator = () => {
                 removeAll={false}
                 buttonName="Upload image"
                 getArrayImgs={(images) => {
-                  profileStore.setFiles(images[images.length - 1]?.file);
+                  profileStore.setImageFiles(images[images.length - 1]?.file);
                 }}
               />
             )}
+
+            <CustomFilesUploader />
 
             <InputLabel sx={{ margin: "6px" }} htmlFor="my-input">
               Description:

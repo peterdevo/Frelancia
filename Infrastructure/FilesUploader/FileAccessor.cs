@@ -1,35 +1,30 @@
-
 using System;
 using System.Threading.Tasks;
+using Application.Files;
 using Application.Interfaces;
-using Application.Photos;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
-namespace Infrastructure.Photos
+namespace Infrastructure.FilesUploader
 {
-  public class PhotoAccessor : IPhotoAccessor
+  public class FileAccessor : IFileAccessor
   {
-
     private Cloudinary _cloudinary;
-    public PhotoAccessor(IOptions<CloudinarySetting> config)
+    public FileAccessor(IOptions<CloudinarySetting> config)
     {
       var account = new Account(
         config.Value.CloudName,
         config.Value.ApiKey,
         config.Value.ApiSecret
       );
-
       _cloudinary = new Cloudinary(account);
-
     }
-    public async Task<PhotoResult> AddPhoto(IFormFile file)
+    public async Task<FileResult> AddFile(IFormFile file)
     {
       if (file.Length > 0)
       {
-
         await using var stream = file.OpenReadStream();
 
         var uploadParams = new ImageUploadParams
@@ -46,7 +41,7 @@ namespace Infrastructure.Photos
           throw new Exception(result.Error.Message);
         }
 
-        return new PhotoResult
+        return new FileResult
         {
           PublicId = result.PublicId,
           Url = result.SecureUrl.ToString()
@@ -55,13 +50,13 @@ namespace Infrastructure.Photos
       return null;
     }
 
-    public async Task<string> DeletePhoto(string publicId)
+    public async Task<string> DeleteFile(string publicId)
     {
-      var deleteParams=new DeletionParams(publicId);
+      var deleteParams = new DeletionParams(publicId);
 
-      var result=await _cloudinary.DestroyAsync(deleteParams);
+      var result = await _cloudinary.DestroyAsync(deleteParams);
 
-      return result.Result=="ok"?result.Result:null;
+      return result.Result == "ok" ? result.Result : null;
     }
   }
 }

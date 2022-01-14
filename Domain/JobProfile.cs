@@ -19,6 +19,7 @@ namespace Domain
     public User User { get; set; }
     public ICollection<Job> Job { get; set; }
     public ICollection<Photo> Photos { get; set; } = new List<Photo>();
+    public ICollection<JobFile> JobFiles { get; set; }=new List<JobFile>();
     public string Description { get; set; }
     public DateTime CreateAt { get; set; }
   }

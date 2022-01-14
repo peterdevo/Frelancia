@@ -24,13 +24,32 @@ namespace Server.Controllers
       return HandleResult(await Mediator.Send(new ListNiche.Query()));
     }
 
+    [HttpPost("addlink/{id}")]
+    public async Task<IActionResult> AddLink(Guid id, JobLink jobLink)
+    {
+      return HandleResult(await Mediator.Send(new AddLink.Command { Id = id, JobLink = jobLink }));
+    }
 
-    // [HttpGet("{id}")]
+    [HttpDelete("deletelink/{id}")]
 
-    // public async Task<IActionResult> GetJobProfile(Guid id)
-    // {
-    //   return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
-    // }
+    public async Task<IActionResult> DeleteLink(int Id)
+    {
+      return HandleResult(await Mediator.Send(new DeleteLink.Command { Id = Id }));
+    }
+
+    [HttpPost("addfile")]
+
+    public async Task<IActionResult> AddFile([FromForm] AddFile.Command command)
+    {
+      return HandleResult(await Mediator.Send(command));
+    }
+
+    [HttpDelete("deletefile/{id}")]
+    public async Task<IActionResult> DeleteFile(int id)
+    {
+      return HandleResult(await Mediator.Send(new DeleteFile.Command { Id = id }));
+    }
+
 
     [HttpPost]
     public async Task<IActionResult> AddJobProfile([FromForm] Create.Command command)
@@ -45,15 +64,16 @@ namespace Server.Controllers
     }
 
     [HttpPut("{id}")]
-   public async Task<IActionResult> EditJobProfile(Guid id, JobProfile jobProfile)
+    public async Task<IActionResult> EditJobProfile(Guid id, JobProfile jobProfile)
     {
       jobProfile.Id = id;
       return HandleResult(await Mediator.Send(new Edit.Command { JobProfile = jobProfile }));
     }
 
     [HttpPut("updatephoto")]
-    public async Task<IActionResult> UpdatePhoto([FromForm] DeletePhoto.Command command){
-        return HandleResult(await Mediator.Send(command));
+    public async Task<IActionResult> UpdatePhoto([FromForm] DeletePhoto.Command command)
+    {
+      return HandleResult(await Mediator.Send(command));
     }
 
     [HttpDelete("{id}")]

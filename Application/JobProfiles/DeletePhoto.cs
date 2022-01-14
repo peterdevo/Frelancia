@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Core;
@@ -22,11 +20,11 @@ namespace Application.JobProfiles
     public class Handler : IRequestHandler<Command, Result<Unit>>
     {
       public DataContext _context;
-      public IPhotoAccessor _photoAccessor;
-      public Handler(DataContext dataContext, IPhotoAccessor photoAccessor)
+      public IFileAccessor _fileAccessor;
+      public Handler(DataContext dataContext, IFileAccessor fileAccessor)
       {
         _context = dataContext;
-        _photoAccessor = photoAccessor;
+        _fileAccessor = fileAccessor;
 
       }
 
@@ -43,7 +41,7 @@ namespace Application.JobProfiles
         _context.Photos.Remove(photo);
 
 
-        await _photoAccessor.DeletePhoto(request.DeletedId);
+        await _fileAccessor.DeleteFile(request.DeletedId);
 
 
         var result = await _context.SaveChangesAsync() > 0;

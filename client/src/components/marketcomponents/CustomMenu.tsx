@@ -16,28 +16,38 @@ import { Niche } from "../../models/Niche";
 
 interface IProps {
   niches?: Niche[];
+  setSelectedValue: (value: number) => void;
 }
-const CustomMenu = ({ niches }: IProps) => {
-  const [age, setAge] = React.useState("");
-
+const CustomMenu = ({ niches, setSelectedValue }: IProps) => {
   const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value as string);
+    setSelectedValue(parseInt(event.target.value));
   };
   return (
     <FormControl
-      sx={{ width: "150px",margin:"40px 0px", border: "1px solid white", outline: "none" }}
+      sx={{
+        width: "150px",
+        margin: "40px 0px",
+        border: "1px solid white",
+        outline: "none",
+      }}
     >
       <InputLabel id="demo-simple-select-label">Niche</InputLabel>
       <Select
         IconComponent={FilterListIcon}
         labelId="demo-simple-select-label"
         id="demo-simple-select"
-        value={age}
-        label="Age"
+        defaultValue=""
         onChange={handleChange}
       >
+        <MenuItem value={0}>
+          All
+        </MenuItem>
         {niches!.length > 0 &&
-          niches?.map((n) => <MenuItem key={n.id} value={n.id}>{n.title}</MenuItem>)}
+          niches?.map((n) => (
+            <MenuItem key={n.id} value={n.id}>
+              {n.title}
+            </MenuItem>
+          ))}
       </Select>
     </FormControl>
   );

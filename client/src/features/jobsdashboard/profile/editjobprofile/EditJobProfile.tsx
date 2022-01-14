@@ -2,13 +2,14 @@ import {
   Button,
   CircularProgress,
   InputLabel,
+  TextField,
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import { FieldArray, Form, Formik } from "formik";
+import { Field, FieldArray, Form, Formik } from "formik";
 import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ImageListType } from "react-images-uploading";
 import FormikField from "../../../../components/customformik/FormikField";
 import PhotoList from "../../../../components/photocomponents/PhotoList";
@@ -17,9 +18,13 @@ import { JobProfile } from "../../../../models/JobProfile";
 import { useStore } from "../../../../stores/store";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-
+import TextAreaComponent from "../../../../components/customformik/TextAreaComponent";
+import ClearIcon from "@mui/icons-material/Clear";
+import CustomSingleFileUploader from "../../../../components/CustomSingleFileUploader";
 const EditJobProfile = () => {
-  const { profileStore, accountStore, commonStore } = useStore();
+  const { profileStore } = useStore();
+  const [addedLinks, setAddedLinks] = useState("");
+  const [toggle, setToggle] = useState(false);
 
   useEffect(() => {
     profileStore.loadProfiles();
@@ -29,15 +34,16 @@ const EditJobProfile = () => {
     profileStore.setSelectProfile(jp);
   };
 
+  console.log(toJS(profileStore.selectedProfile));
+
   return (
-    <Box>
-      <Box sx={{ display: "flex" }}>
+    <Box sx={{ padding: "20px" }}>
+      <Box sx={{ display: "flex",gap:"1em" }}>
         {profileStore.jobProfiles.length > 0 ? (
           profileStore.jobProfiles.map((jp) => (
             <div
               key={jp.id}
               style={{
-                padding: 10,
                 color: "#2C272E",
               }}
             >
@@ -109,88 +115,273 @@ const EditJobProfile = () => {
       </Box>
 
       <Formik
-        initialValues={{
-          profile: profileStore.selectedProfile,
-          isLoading: profileStore.isLoading,
-        }}
+        initialValues={profileStore.selectedProfile}
         enableReinitialize
-        onSubmit={(values) => {
-          profileStore.editJobProfile(values.profile);
+        onSubmit={(values, { resetForm }) => {
+          console.log(values);
+          profileStore.editJobProfile(values).finally(() => resetForm());
         }}
       >
-        {({ handleSubmit, values, setFieldValue }) => (
+        {({ handleSubmit, values, isSubmitting, setSubmitting }) => (
           <Form onSubmit={handleSubmit}>
-            {values.profile.id && (
+            {values.id && (
               <div>
+                <Box>
+                  <Box sx={{ display: "inline-block", minWidth: "80%" }}>
+                    <InputLabel sx={{ margin: "6px" }} htmlFor="my-input">
+                      Profile name:
+                    </InputLabel>
+                    <FormikField
+                      name="profileName"
+                      type="field"
+                      value={values.profileName}
+                    />
+                  </Box>
+                  <Button
+                    disabled={(values.id === "" && true) || isSubmitting}
+                    variant="contained"
+                    type="submit"
+                    sx={{ margin: "35px 0px 0px 20px" }}
+                  >
+                    {isSubmitting ? <CircularProgress size={22} /> : "Save"}
+                  </Button>
+                </Box>
                 <div>
                   <InputLabel sx={{ margin: "6px" }} htmlFor="my-input">
                     Photo:
                   </InputLabel>
-                  <div style={{ display: "flex", alignItems: "center" }}>
+                  <div>
                     <PhotoList
                       isIndex={false}
-                      isLoading={values.isLoading}
-                      photos={values.profile.photos}
+                      isLoading={isSubmitting}
+                      photos={values.photos}
                       deletePhoto={(publicId) => {
-                        profileStore.deletePhoto(values.profile.id, publicId);
+                        setSubmitting(true);
+                        profileStore
+                          .deletePhoto(values.id, publicId)
+                          .finally(() => setSubmitting(false));
                       }}
                     />
                     <PhotoUploader
                       removeAll={true}
                       usePhotoList={false}
-                      buttonName="Add more image"
-                      isLoading={values.isLoading}
+                      buttonName="Add image"
+                      isLoading={isSubmitting}
                       getArrayImgs={(images: ImageListType) =>
                         images.forEach((img: any) => {
-                          profileStore.addPhoto(values.profile.id, img.file);
+                          setSubmitting(true);
+                          profileStore
+                            .addPhoto(values.id, img.file)
+                            .finally(() => setSubmitting(false));
                         })
                       }
                     />
                   </div>
                 </div>
-
                 <InputLabel sx={{ margin: "6px" }} htmlFor="my-input">
                   Links:
                 </InputLabel>
+
                 <FieldArray
                   name="jobLinks"
                   render={() => (
-                    <div>
-                      {values.profile.jobLinks.map((jp, index) => (
-                        <FormikField
-                          key={index}
-                          name={`profile.jobLinks[${index}].url`}
-                          type="field"
-                          value={jp.url}
-                        />
+                    <div style={{ display: "flex", flexWrap: "wrap" }}>
+                      {values.jobLinks.map((jp, index) => (
+                        <div
+                          key={jp.id}
+                          style={{
+                            minWidth: "200px",
+                            display: "flex",
+                            alignItems: "center",
+                            marginRight: "30px",
+                          }}
+                        >
+                          <FormikField
+                            name={`jobLinks[${index}].url`}
+                            type="field"
+                            value={jp.url}
+                          />
+                          <Button
+                            sx={{ margin: "0px 10px 0px 10px" }}
+                            disabled={
+                              (values.id === "" && true) || isSubmitting
+                            }
+                            variant="contained"
+                            type="submit"
+                          >
+                            {isSubmitting ? (
+                              <CircularProgress size={22} />
+                            ) : (
+                              "Save"
+                            )}
+                          </Button>
+
+                          <Button
+                            disabled={
+                              (values.id === "" && true) || isSubmitting
+                            }
+                            onClick={() => {
+                              setSubmitting(true);
+                              profileStore
+                                .deleteUpdatedLink(jp.id!)
+                                .finally(() => setSubmitting(false));
+                            }}
+                            variant="contained"
+                            type="button"
+                            sx={{
+                              backgroundColor: "red",
+                              "&:hover": {
+                                backgroundColor: "red",
+                              },
+                            }}
+                          >
+                            {isSubmitting ? (
+                              <CircularProgress size={22} />
+                            ) : (
+                              "Delete"
+                            )}
+                          </Button>
+                        </div>
                       ))}
                     </div>
                   )}
                 />
-                <InputLabel sx={{ margin: "6px" }} htmlFor="my-input">
-                  Description:
-                </InputLabel>
-                <FormikField
-                  placeholder="Description"
-                  name="profile.description"
-                  type="field"
-                  value={values.profile.description}
-                />
+                {isSubmitting ? (
+                  <CircularProgress size={22} />
+                ) : (
+                  <Button
+                    type="button"
+                    sx={{
+                      backgroundColor: "#FFAB76",
+                      "&:hover": {
+                        backgroundColor: "#FFAB76",
+                      },
+                    }}
+                    onClick={() => setToggle(!toggle)}
+                    variant="contained"
+                  >
+                    Add new link
+                  </Button>
+                )}
+                {toggle && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginTop: "10px",
+                    }}
+                  >
+                    <TextField
+                      style={{ width: "50%" }}
+                      label="Links"
+                      fullWidth
+                      value={addedLinks}
+                      onChange={(e) => setAddedLinks(e.target.value)}
+                    />
+                    <Button
+                      disabled={(values.id === "" && true) || isSubmitting}
+                      variant="contained"
+                      type="button"
+                      sx={{ marginLeft: "10px" }}
+                      onClick={() => {
+                        setSubmitting(true);
+                        profileStore
+                          .addLink(values.id, { url: addedLinks })
+                          .finally(() => setSubmitting(false));
+                      }}
+                    >
+                      {isSubmitting ? <CircularProgress size={22} /> : "Save"}
+                    </Button>
+                  </Box>
+                )}
+                <Box>
+                  <InputLabel sx={{ margin: "6px" }} htmlFor="my-input">
+                    PDF:
+                  </InputLabel>
+                  {values.jobFiles.length > 0 && (
+                    <Box>
+                      <Box sx={{ display: "flex" }}>
+                        {values.jobFiles.map((jf) => (
+                          <Box
+                            sx={{
+                              color: "white",
+                              marginRight: "10px",
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                            key={jf.id}
+                          >
+                            {isSubmitting ? (
+                              <CircularProgress size={22} />
+                            ) : (
+                              <Box
+                                sx={{
+                                  backgroundColor: "#3FA796",
+                                  padding: "20px",
+                                  borderRadius: "10px",
+                                  position: "relative",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <Typography>{jf.name}</Typography>
+                                <div
+                                  onClick={() => {
+                                    setSubmitting(true);
+                                    profileStore
+                                      .deleteFile(jf.id!)
+                                      .finally(() => setSubmitting(false));
+                                  }}
+                                  style={{
+                                    position: "absolute",
+                                    top: "0px",
+                                    right: "0px",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  <ClearIcon
+                                    fontSize="small"
+                                    sx={{ color: "white" }}
+                                  />
+                                </div>
+                              </Box>
+                            )}
+                          </Box>
+                        ))}
+                      </Box>
+                    </Box>
+                  )}
+                  <CustomSingleFileUploader
+                    isLoading={isSubmitting}
+                    setFile={(file) => {
+                      setSubmitting(true);
+                      profileStore
+                        .addFile(values.id, file)
+                        .finally(() => setSubmitting(false));
+                    }}
+                  />
+                </Box>
 
-                <Button
-                  disabled={
-                    (values.profile.id === "" && true) || values.isLoading
-                  }
-                  variant="contained"
-                  size="medium"
-                  type="submit"
-                  fullWidth
-                  onClick={() => {
-                    setFieldValue("isLoading", profileStore.isLoading);
-                  }}
-                >
-                  {values.isLoading ? <CircularProgress size={22} /> : "Update"}
-                </Button>
+                <Box>
+                  <Box sx={{ display: "inline-block", minWidth: "80%" }}>
+                    <InputLabel sx={{ margin: "6px" }} htmlFor="my-input">
+                      Description:
+                    </InputLabel>
+
+                    <Field
+                      name="description"
+                      value={values.description}
+                      component={TextAreaComponent}
+                    />
+                  </Box>
+                  <Button
+                    disabled={(values.id === "" && true) || isSubmitting}
+                    variant="contained"
+                    type="submit"
+                    sx={{ margin: "120px 0px 0px 20px" }}
+                  >
+                    {isSubmitting ? <CircularProgress size={22} /> : "Save"}
+                  </Button>
+                </Box>
               </div>
             )}
           </Form>
